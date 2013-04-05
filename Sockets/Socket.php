@@ -2,54 +2,19 @@
 
 namespace Sockets;
 
-use React\EventLoop;
-
 class Socket
 {
     private $resource;
-    private $loop;
-    private $pollInterval;
-    private $tid = null;
 
-    public function __construct($resource, $pollInterval = 0.01, EventLoopInterface $loop)
+    public function __construct($resource)
     {
         $this->resource = $resource;
-        $this->pollInterval = $pollInterval;
-        $this->loop = $loop;
     }
-
-    public function resume()
-    {
-        if ($this->tid === null) {
-            $this->tid = $this->loop->addPeriodicTimer($this->pollInterval, array($this, 'poll'));
-        }
-    }
-
-    public function pause()
-    {
-        if ($this->tid !== null) {
-            $this->loop->cancelTimer($this->tid);
-            $this->tid = null;
-        }
-    }
-
-    public function poll()
-    {
-        if ($this->selectRead()) {
-            $this->readale();
-        }
-    }
-
-    protected function readable()
-    {
-    }
-
-    // re-definitions:
 
     public function accept()
     {
         $resource = $this->assertSuccess(socket_accept($this->resource));
-        return new Socket($resource, $this->loop, $this->pollInterval);
+        return new Socket($resource);
     }
 
     public function bind($address, $port = 0)
@@ -61,8 +26,6 @@ class Socket
     public function close()
     {
         if ($this->resource !== false) {
-            $this->pause();
-
             socket_close($this->resource);
             $this->resource = false;
         }
