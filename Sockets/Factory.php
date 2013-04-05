@@ -18,7 +18,7 @@ class Factory
 
     private function create($domain, $type, $protocol)
     {
-        $sock = socket_create(AF_INET, SOCK_DGRAM, SOL_UDP);
+        $sock = socket_create($domain, $type, $protocol);
         if ($sock === false) {
             throw new Exception('Unable to create socket');
         }
