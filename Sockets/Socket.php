@@ -2,6 +2,8 @@
 
 namespace Sockets;
 
+use \Exception;
+
 class Socket
 {
     private $resource;
