@@ -1,6 +1,6 @@
 <?php
 
-namespace Sockets;
+namespace Socket\Raw;
 
 use \Exception;
 
