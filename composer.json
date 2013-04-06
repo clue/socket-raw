@@ -1,0 +1,7 @@
+{
+    "name": "clue/socket-raw",
+    "require": {
+        "ext-sockets": "*",
+        "php": ">=5.3"
+    }
+}
