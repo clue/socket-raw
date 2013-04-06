@@ -13,6 +13,11 @@ class Socket
         $this->resource = $resource;
     }
 
+    public function getResource()
+    {
+        return $this->resource;
+    }
+
     public function accept()
     {
         $resource = $this->assertSuccess(socket_accept($this->resource));
@@ -142,7 +147,9 @@ class Socket
     protected function formatAddress($address, $port)
     {
         if ($port !== null) {
-            // TODO: IPv6
+            if (strpos($address, ':') !== false) {
+                $address = '[' . $address . ']';
+            }
             $address .= ':' . $port;
         }
         return $address;
