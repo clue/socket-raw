@@ -24,8 +24,9 @@ class Socket
         return new Socket($resource);
     }
 
-    public function bind($address, $port = 0)
+    public function bind($address)
     {
+        list($address, $port) = $this->unformatAddress($address);
         $this->assertSuccess(socket_bind($this->resource, $address, $port));
         return $this;
     }
@@ -39,8 +40,9 @@ class Socket
         return $this;
     }
 
-    public function connect($address, $port = 0)
+    public function connect($address)
     {
+        list($address, $port) = $this->unformatAddress($address);
         $this->assertSuccess(socket_connect($this->resource, $address, $port));
         return $this;
     }
@@ -158,6 +160,7 @@ class Socket
     protected function unformatAddress($address)
     {
         // TODO: IPv6
+        $port = 0;
         return explode(':', $address);
     }
 }
