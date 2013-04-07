@@ -138,6 +138,17 @@ class Socket
         return $this->assertSuccess(socket_write($this->resource, $buffer));
     }
 
+    /**
+     * get socket type as passed to socket_create()
+     *
+     * @return int usually either SOCK_STREAM or SOCK_DGRAM
+     * @uses self::getOption()
+     */
+    public function getType()
+    {
+        return $this->getOption(SOL_SOCKET, SO_TYPE);
+    }
+
     protected function assertSuccess($val)
     {
         if ($val === false) {
