@@ -117,15 +117,27 @@ class Factory
     }
 
     /**
-     * create raw ICMP datagram socket (requires root!)
+     * create raw ICMP/IPv4 datagram socket (requires root!)
      *
      * @return \Socket\Raw\Socket
      * @throws Exception on error
      * @uses self::create()
      */
-    public function createIcmp()
+    public function createIcmp4()
     {
         return $this->create(AF_INET, SOCK_RAW, getprotobyname('icmp'));
+    }
+
+    /**
+     * create raw ICMPv6 (IPv6) datagram socket (requires root!)
+     *
+     * @return \Socket\Raw\Socket
+     * @throws Exception on error
+     * @uses self::create()
+     */
+    public function createIcmp6()
+    {
+        return $this->create(AF_INET6, SOCK_RAW, 58 /*getprotobyname('icmp')*/);
     }
 
     /**
@@ -204,7 +216,8 @@ class Factory
             $address = substr($address, $pos + 3);
         }
 
-        if (strpos($address, '[') !== false && ($scheme === 'tcp' || $scheme === 'udp')) {
+        if (strpos($address, ':') !== strrpos($address, ':') && in_array($scheme, array('tcp', 'udp', 'icmp'))) {
+            // TCP/UDP/ICMP address with several colons => must be IPv6
             $scheme .= '6';
         }
 
@@ -221,7 +234,9 @@ class Factory
         } elseif ($scheme === 'udg') {
             $socket = $this->createUdg();
         } elseif ($scheme === 'icmp') {
-            $socket = $this->createIcmp();
+            $socket = $this->createIcmp4();
+        } elseif ($scheme === 'icmp6') {
+            $socket = $this->createIcmp6();
         } else {
             throw new InvalidArgumentException('Invalid address scheme given');
         }
