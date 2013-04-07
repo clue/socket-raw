@@ -26,8 +26,7 @@ class Socket
 
     public function bind($address)
     {
-        list($address, $port) = $this->unformatAddress($address);
-        $this->assertSuccess(socket_bind($this->resource, $address, $port));
+        $this->assertSuccess(socket_bind($this->resource, $this->unformatAddress($address, $port), $port));
         return $this;
     }
 
@@ -42,8 +41,7 @@ class Socket
 
     public function connect($address)
     {
-        list($address, $port) = $this->unformatAddress($address);
-        $this->assertSuccess(socket_connect($this->resource, $address, $port));
+        $this->assertSuccess(socket_connect($this->resource, $this->unformatAddress($address, $port), $port));
         return $this;
     }
 
@@ -54,13 +52,13 @@ class Socket
 
     public function getPeerName()
     {
-        $this->assertSuccess(socket_getpeername($this->resource, $address = '', $port = null));
+        $this->assertSuccess(socket_getpeername($this->resource, $address, $port));
         return $this->formatAddress($address, $port);
     }
 
     public function getSockName()
     {
-        $this->assertSuccess(socket_getsockname($this->resource, $address = '', $port = null));
+        $this->assertSuccess(socket_getsockname($this->resource, $address, $port));
         return $this->formatAddress($address, $port);
     }
 
@@ -77,25 +75,27 @@ class Socket
 
     public function recv($length, $flags)
     {
-        $this->assertSuccess(socket_recv($this->resource, $buffer = '', $length, $flags));
+        $this->assertSuccess(socket_recv($this->resource, $buffer, $length, $flags));
         return $buffer;
     }
 
     public function recvFrom($length, $flags, &$remote)
     {
-        $this->assertSuccess(socket_recvfrom($this->resource, $buffer = '', $length, $flags, $address = '', $port = null));
+        $this->assertSuccess(socket_recvfrom($this->resource, $buffer, $length, $flags, $address, $port));
         $remote = $this->formatAddress($address, $port);
         return $buffer;
     }
 
     public function selectRead()
     {
-        return !!$this->assertSuccess(socket_select($r = array($this->resource), $x = null, $x = null, 0));
+        $r = array($this->resource);
+        return !!$this->assertSuccess(socket_select($r, $x = null, $x = null, 0));
     }
 
     public function selectWrite()
     {
-        return !!$this->assertSuccess(socket_select($x = null, $w = array($this->resource), $x = null, 0));
+        $w = array($this->resource);
+        return !!$this->assertSuccess(socket_select($x = null, $w, $x = null, 0));
     }
 
     public function send($buffer, $flags)
@@ -105,8 +105,7 @@ class Socket
 
     public function sendTo($buffer, $flags, $remote)
     {
-        list($address, $port) = $this->unformatAddress($remote);
-        return $this->assertSuccess(socket_sendto($this->resource, $buffer, strlen($buffer), $flags, $address, $port));
+        return $this->assertSuccess(socket_sendto($this->resource, $buffer, strlen($buffer), $flags, $this->unformatAddress($remote, $port), $port));
     }
 
     public function setBlock()
@@ -172,10 +171,8 @@ class Socket
     // test:2 => test 2
     // ::1 => ::1
     // test => test
-    protected function unformatAddress($address)
+    protected function unformatAddress($address, &$port)
     {
-        $port = 0;
-
         $colon = strrpos($address, ':');
 
         // there is a colon and this is the only colon or there's a closing IPv6 bracket right before it
@@ -188,6 +185,6 @@ class Socket
                 $address = substr($address, 1, -1);
             }
         }
-        return array($address, $port);
+        return $address;
     }
 }
