@@ -16,7 +16,7 @@ class Factory
         return $this->create(AF_INET6, SOCK_DGRAM, SOL_UDP);
     }
 
-    private function create($domain, $type, $protocol)
+    public function create($domain, $type, $protocol)
     {
         $sock = socket_create($domain, $type, $protocol);
         if ($sock === false) {
