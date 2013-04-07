@@ -86,16 +86,30 @@ class Socket
         return $buffer;
     }
 
-    public function selectRead()
+    /**
+     * check socket to see if a read/recv/revFrom will not block
+     *
+     * @param int|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
+     * @return boolean true = socket ready (read will not block), false = timeout expired, socket is not ready
+     * @uses socket_select()
+     */
+    public function selectRead($sec = 0)
     {
         $r = array($this->resource);
-        return !!$this->assertSuccess(socket_select($r, $x = null, $x = null, 0));
+        return !!$this->assertSuccess(socket_select($r, $x = null, $x = null, $sec));
     }
 
-    public function selectWrite()
+    /**
+     * check socket to see if a write/send/sendTo will not block
+     *
+     * @param int|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
+     * @return boolean true = socket ready (write will not block), false = timeout expired, socket is not ready
+     * @uses socket_select()
+     */
+    public function selectWrite($sec = 0)
     {
         $w = array($this->resource);
-        return !!$this->assertSuccess(socket_select($x = null, $w, $x = null, 0));
+        return !!$this->assertSuccess(socket_select($x = null, $w, $x = null, $sec));
     }
 
     public function send($buffer, $flags)
