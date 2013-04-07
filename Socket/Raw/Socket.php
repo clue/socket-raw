@@ -168,10 +168,26 @@ class Socket
         return $address;
     }
 
+    // [::1]:2 => ::1 2
+    // test:2 => test 2
+    // ::1 => ::1
+    // test => test
     protected function unformatAddress($address)
     {
-        // TODO: IPv6
         $port = 0;
-        return explode(':', $address);
+
+        $colon = strrpos($address, ':');
+
+        // there is a colon and this is the only colon or there's a closing IPv6 bracket right before it
+        if ($colon !== false && (strpos($address, ':') === $colon || strpos($address, ']') === ($colon - 1))) {
+            $port = (int)substr($address, $colon + 1);
+            $address = substr($address, 0, $colon);
+
+            // remove IPv6 square brackets
+            if (substr($address, 0, 1) === '[') {
+                $address = substr($address, 1, -1);
+            }
+        }
+        return array($address, $port);
     }
 }
