@@ -148,6 +148,44 @@ class Factory
     }
 
     /**
+     * create a pair of indistinguishable sockets (commonly used in IPC)
+     *
+     * @param int $domain
+     * @param int $type
+     * @param int $protocol
+     * @return \Socket\Raw\Socket[]
+     * @throws Exception if creating pair of sockets fails
+     * @uses socket_create_pair()
+     */
+    public function createPair($domain, $type, $protocol)
+    {
+        $ret = socket_create_pair($domain, $type, $protocol, $pair);
+        if ($ret === false) {
+            throw new Exception('Unable to create pair of sockets');
+        }
+        return array(new Socket($pair[0]), new Socket($pair[1]));
+    }
+
+    /**
+     * create TCP/IPv4 stream socket and listen for new connections
+     *
+     * @param int $port
+     * @param int $backlog
+     * @return \Socket\Raw\Socket
+     * @throws Exception if creating listening socket fails
+     * @uses socket_create_listen()
+     * @see self::createServer() as an alternative to bind to specific IP, IPv6, UDP, UNIX, UGP
+     */
+    public function createListen($port, $backlog = 128)
+    {
+        $sock = socket_create_listen($port, $backlog);
+        if ($sock === false) {
+            throw new Exception('Unable to create listening socket');
+        }
+        return new Socket($sock);
+    }
+
+    /**
      * create socket for given address (scheme defaults to TCP)
      *
      * @param string $address (passed by reference in order to remove scheme, if present)
