@@ -270,30 +270,17 @@ class Socket
     }
 
     /**
-     * set blocking mode
+     * enable/disable blocking/nonblocking mode (O_NONBLOCK flag)
      *
+     * @param boolean $toggle
      * @return self $this (chainable)
      * @throws Exception on error
-     * @see self::setUnblock()
      * @uses socket_set_block()
-     */
-    public function setBlock()
-    {
-        $this->assertSuccess(socket_set_block($this->resource));
-        return $this;
-    }
-
-    /**
-     * set nonblocking mode
-     *
-     * @return self $this (chainable)
-     * @throws Exception on error
-     * @see self::setBlock()
      * @uses socket_set_nonblock()
      */
-    public function setUnblock()
+    public function setBlocking($toggle = true)
     {
-        $this->assertSuccess(socket_set_nonblock($this->resource));
+        $this->assertSuccess($toggle ? socket_set_block($this->resource) : socket_set_nonblock($this->resource));
         return $this;
     }
 
