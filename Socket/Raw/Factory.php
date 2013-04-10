@@ -19,7 +19,7 @@ class Factory
      */
     public function createClient($address)
     {
-        $socket = $this->createFromString($address);
+        $socket = $this->createFromString($address, $scheme);
         return $socket->connect($address);
     }
 
@@ -35,7 +35,7 @@ class Factory
      */
     public function createServer($address)
     {
-        $socket = $this->createFromString($address);
+        $socket = $this->createFromString($address, $scheme);
         $socket->bind($address);
 
         if ($socket->getType() === SOCK_STREAM) {
@@ -198,17 +198,20 @@ class Factory
     }
 
     /**
-     * create socket for given address (scheme defaults to TCP)
+     * create socket for given address
      *
      * @param string $address (passed by reference in order to remove scheme, if present)
+     * @param string $scheme  default scheme to use, defaults to TCP (passed by reference in order to update with actual scheme used)
      * @return \Socket\Raw\Socket
      * @throws InvalidArgumentException if given address is invalid
      * @throws Exception in case creating socket failed
      * @uses self::createTcp4() etc.
      */
-    protected function createFromString(&$address)
+    public function createFromString(&$address, &$scheme)
     {
-        $scheme = 'tcp';
+        if ($scheme === null) {
+            $scheme = 'tcp';
+        }
 
         $pos = strpos($address, '://');
         if ($pos !== false) {
