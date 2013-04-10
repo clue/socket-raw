@@ -152,9 +152,10 @@ class Factory
      */
     public function create($domain, $type, $protocol)
     {
-        $sock = socket_create($domain, $type, $protocol);
+        $sock = @socket_create($domain, $type, $protocol);
         if ($sock === false) {
-            throw new Exception('Unable to create socket');
+            $code = socket_last_error();
+            throw new Exception('Unable to create socket: ' . socket_strerror($code), $code);
         }
         return new Socket($sock);
     }
@@ -171,9 +172,10 @@ class Factory
      */
     public function createPair($domain, $type, $protocol)
     {
-        $ret = socket_create_pair($domain, $type, $protocol, $pair);
+        $ret = @socket_create_pair($domain, $type, $protocol, $pair);
         if ($ret === false) {
-            throw new Exception('Unable to create pair of sockets');
+            $code = socket_last_error();
+            throw new Exception('Unable to create pair of sockets: ' . socket_strerror($code), $code);
         }
         return array(new Socket($pair[0]), new Socket($pair[1]));
     }
@@ -190,9 +192,10 @@ class Factory
      */
     public function createListen($port, $backlog = 128)
     {
-        $sock = socket_create_listen($port, $backlog);
+        $sock = @socket_create_listen($port, $backlog);
         if ($sock === false) {
-            throw new Exception('Unable to create listening socket');
+            $code = socket_last_error();
+            throw new Exception('Unable to create listening socket: ' . socket_strerror($code), $code);
         }
         return new Socket($sock);
     }
