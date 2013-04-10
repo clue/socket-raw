@@ -343,6 +343,33 @@ class Socket
     }
 
     /**
+     * assert that this socket is alive and its error code is 0
+     *
+     * This will fetch and reset the current socket error code from the
+     * socket and options and will throw an Exception along with error
+     * message and code if the code is not 0, i.e. if it does indicate
+     * an error situation.
+     *
+     * Calling this method should not be needed in most cases and is
+     * likely to not throw an Exception. Each socket operation like
+     * connect(), send(), etc. will throw a dedicated Exception in case
+     * of an error anyway.
+     *
+     * @return self $this (chainable)
+     * @throws Exception if error code is not 0
+     * @uses self::getOption() to retrieve and clear current error code
+     * @uses self::getErrorMessage() to translate error code to
+     */
+    public function assertAlive()
+    {
+        $code = $this->getOption(SOL_SOCKET, SO_ERROR);
+        if ($code !== 0) {
+            throw new Exception('Socket error: ' . $this->getErrorMessage($code), $code);
+        }
+        return $this;
+    }
+
+    /**
      * assert the given $val is not boolean false, which is an error condition
      *
      * @param mixed $val
