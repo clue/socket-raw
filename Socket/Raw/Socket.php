@@ -349,14 +349,39 @@ class Socket
      * @return mixed given $val as-is
      * @throws Exception if given $val is boolean false
      * @uses socket_last_error() to get last error code
-     * @uses socket_strerror() to translate error code to error message
+     * @uses socket_clear_error() to clear error code
+     * @uses self::getErrorMessage() to translate error code to error message
      */
     protected function assertSuccess($val)
     {
         if ($val === false) {
-            throw new Exception('Socket operation failed: ' . socket_strerror(socket_last_error($this->resource)));
+            $code = socket_last_error($this->resource);
+            socket_clear_error($this->resource);
+
+            throw new Exception('Socket operation failed: ' . $this->getErrorMessage($code), $code);
         }
         return $val;
+    }
+
+    /**
+     * get error message for given error code
+     *
+     * @param int $code error code
+     * @return string
+     * @uses socket_strerror() to translate error code to error message
+     * @uses get_defined_constants() to check for related error constant
+     */
+    protected function getErrorMessage($code)
+    {
+        $string = socket_strerror($code);
+
+        $consts = get_defined_constants(true);
+        $const = array_search($code, $consts['sockets'], true);
+        if ($const !== false) {
+            $string .= ' (' . $const . ')';
+        }
+
+        return $string;
     }
 
     /**
