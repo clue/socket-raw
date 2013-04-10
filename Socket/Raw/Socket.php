@@ -54,7 +54,7 @@ class Socket
      */
     public function accept()
     {
-        $resource = $this->assertSuccess(socket_accept($this->resource));
+        $resource = $this->assertSuccess(@socket_accept($this->resource));
         return new Socket($resource);
     }
 
@@ -70,7 +70,7 @@ class Socket
      */
     public function bind($address)
     {
-        $this->assertSuccess(socket_bind($this->resource, $this->unformatAddress($address, $port), $port));
+        $this->assertSuccess(@socket_bind($this->resource, $this->unformatAddress($address, $port), $port));
         return $this;
     }
 
@@ -103,7 +103,7 @@ class Socket
      */
     public function connect($address)
     {
-        $this->assertSuccess(socket_connect($this->resource, $this->unformatAddress($address, $port), $port));
+        $this->assertSuccess(@socket_connect($this->resource, $this->unformatAddress($address, $port), $port));
         return $this;
     }
 
@@ -118,7 +118,7 @@ class Socket
      */
     public function getOption($level, $optname)
     {
-        return $this->assertSuccess(socket_get_option($this->resource, $level, $optname));
+        return $this->assertSuccess(@socket_get_option($this->resource, $level, $optname));
     }
 
     /**
@@ -130,7 +130,7 @@ class Socket
      */
     public function getPeerName()
     {
-        $this->assertSuccess(socket_getpeername($this->resource, $address, $port));
+        $this->assertSuccess(@socket_getpeername($this->resource, $address, $port));
         return $this->formatAddress($address, $port);
     }
 
@@ -143,7 +143,7 @@ class Socket
      */
     public function getSockName()
     {
-        $this->assertSuccess(socket_getsockname($this->resource, $address, $port));
+        $this->assertSuccess(@socket_getsockname($this->resource, $address, $port));
         return $this->formatAddress($address, $port);
     }
 
@@ -158,7 +158,7 @@ class Socket
      */
     public function listen($backlog = 0)
     {
-        $this->assertSuccess(socket_listen($this->resource, $backlog));
+        $this->assertSuccess(@socket_listen($this->resource, $backlog));
         return $this;
     }
 
@@ -173,7 +173,7 @@ class Socket
      */
     public function read($length)
     {
-        return $this->assertSuccess(socket_read($this->resource, $length));
+        return $this->assertSuccess(@socket_read($this->resource, $length));
     }
 
     /**
@@ -189,7 +189,7 @@ class Socket
      */
     public function recv($length, $flags)
     {
-        $this->assertSuccess(socket_recv($this->resource, $buffer, $length, $flags));
+        $this->assertSuccess(@socket_recv($this->resource, $buffer, $length, $flags));
         return $buffer;
     }
 
@@ -206,7 +206,7 @@ class Socket
      */
     public function recvFrom($length, $flags, &$remote)
     {
-        $this->assertSuccess(socket_recvfrom($this->resource, $buffer, $length, $flags, $address, $port));
+        $this->assertSuccess(@socket_recvfrom($this->resource, $buffer, $length, $flags, $address, $port));
         $remote = $this->formatAddress($address, $port);
         return $buffer;
     }
@@ -221,7 +221,7 @@ class Socket
     public function selectRead($sec = 0)
     {
         $r = array($this->resource);
-        return !!$this->assertSuccess(socket_select($r, $x, $x, $sec));
+        return !!$this->assertSuccess(@socket_select($r, $x, $x, $sec));
     }
 
     /**
@@ -234,7 +234,7 @@ class Socket
     public function selectWrite($sec = 0)
     {
         $w = array($this->resource);
-        return !!$this->assertSuccess(socket_select($x, $w, $x, $sec));
+        return !!$this->assertSuccess(@socket_select($x, $w, $x, $sec));
     }
 
     /**
@@ -250,7 +250,7 @@ class Socket
      */
     public function send($buffer, $flags)
     {
-        return $this->assertSuccess(socket_send($this->resource, $buffer, strlen($buffer), $flags));
+        return $this->assertSuccess(@socket_send($this->resource, $buffer, strlen($buffer), $flags));
     }
 
     /**
@@ -266,7 +266,7 @@ class Socket
      */
     public function sendTo($buffer, $flags, $remote)
     {
-        return $this->assertSuccess(socket_sendto($this->resource, $buffer, strlen($buffer), $flags, $this->unformatAddress($remote, $port), $port));
+        return $this->assertSuccess(@socket_sendto($this->resource, $buffer, strlen($buffer), $flags, $this->unformatAddress($remote, $port), $port));
     }
 
     /**
@@ -280,7 +280,7 @@ class Socket
      */
     public function setBlocking($toggle = true)
     {
-        $this->assertSuccess($toggle ? socket_set_block($this->resource) : socket_set_nonblock($this->resource));
+        $this->assertSuccess($toggle ? @socket_set_block($this->resource) : @socket_set_nonblock($this->resource));
         return $this;
     }
 
@@ -297,7 +297,7 @@ class Socket
      */
     public function setOption($level, $optname, $optval)
     {
-        $this->assertSuccess(socket_set_option($this->resource, $level, $optname, $optval));
+        $this->assertSuccess(@socket_set_option($this->resource, $level, $optname, $optval));
         return $this;
     }
 
@@ -312,7 +312,7 @@ class Socket
      */
     public function shutdown($how = 2)
     {
-        $this->assertSuccess(socket_shutdown($this->resource, $how));
+        $this->assertSuccess(@socket_shutdown($this->resource, $how));
         return $this;
     }
 
@@ -327,7 +327,7 @@ class Socket
      */
     public function write($buffer)
     {
-        return $this->assertSuccess(socket_write($this->resource, $buffer));
+        return $this->assertSuccess(@socket_write($this->resource, $buffer));
     }
 
     /**
