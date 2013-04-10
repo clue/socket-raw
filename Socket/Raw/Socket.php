@@ -221,7 +221,7 @@ class Socket
     public function selectRead($sec = 0)
     {
         $r = array($this->resource);
-        return !!$this->assertSuccess(socket_select($r, $x = null, $x = null, $sec));
+        return !!$this->assertSuccess(socket_select($r, $x, $x, $sec));
     }
 
     /**
@@ -234,7 +234,7 @@ class Socket
     public function selectWrite($sec = 0)
     {
         $w = array($this->resource);
-        return !!$this->assertSuccess(socket_select($x = null, $w, $x = null, $sec));
+        return !!$this->assertSuccess(socket_select($x, $w, $x, $sec));
     }
 
     /**
