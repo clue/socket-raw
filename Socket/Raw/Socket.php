@@ -414,13 +414,13 @@ class Socket
     /**
      * format given address/host/path and port
      *
-     * @param string   $address
-     * @param int|null $port
+     * @param string $address
+     * @param int    $port
      * @return string
      */
     protected function formatAddress($address, $port)
     {
-        if ($port !== null) {
+        if ($port !== 0) {
             if (strpos($address, ':') !== false) {
                 $address = '[' . $address . ']';
             }
