@@ -36,7 +36,12 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
-    public function testCreateClientTcp4Fail()
+    /**
+     * the target address should not be bound, so connecting via TCP should fail
+     *
+     * @see self::testCreateClientUdp4UnboundWorks()
+     */
+    public function testCreateClientTcp4UnboundFails()
     {
         try {
             $this->factory->createClient('tcp://localhost:2');
@@ -48,6 +53,25 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         }
 
         $this->fail('Expected to be unable to connect to localhost:2');
+    }
+
+    public function testCreateClientUdp4()
+    {
+        $socket = $this->factory->createClient('udp://8.8.8.8:53');
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+    }
+
+    /**
+     * the target address should not be bound, but "connecting" via UDP works nevertheless
+     *
+     * @see self::testCreateClientTcp4UnboundFails()
+     */
+    public function testCreateClientUdp4UnboundWorks()
+    {
+        $socket = $this->factory->createClient('udp://localhost:3');
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
     public function testCreateServerTcp4Random()
@@ -71,12 +95,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
-    public function testCreateClientUdp4()
-    {
-        $socket = $this->factory->createClient('udp://8.8.8.8:53');
 
-        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
-    }
 
     public function testCreateTcp4()
     {
