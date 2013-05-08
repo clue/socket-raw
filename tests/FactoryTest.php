@@ -95,7 +95,47 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    public function testCreateServerUnix()
+    {
+        // skip if not unix
 
+        $path = '/tmp/randomfactorytests.sock';
+
+        $socket = $this->factory->createServer('unix://' . $path);
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+
+        unlink($path);
+    }
+
+    public function testCreateServerUnixFailInvalidPath()
+    {
+        // skip if not unix
+
+        $path = '/a/path/that/can/not/be/bound/to.sock';
+
+        try {
+            $this->factory->createServer('unix://' . $path);
+        }
+        catch (Exception $e) {
+            return;
+        }
+
+        $this->fail('Expected to fail on invalid path');
+    }
+
+    public function testCreateServerUdg()
+    {
+        // skip if not unix
+
+        $path = '/tmp/randomfactorytests.sock';
+
+        $socket = $this->factory->createServer('udg://' . $path);
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+
+        unlink($path);
+    }
 
     public function testCreateTcp4()
     {
