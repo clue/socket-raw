@@ -113,7 +113,7 @@ class Factory
      */
     public function createUdg()
     {
-        return $this->create(AF_UNIX, SOCK_DRAM, 0);
+        return $this->create(AF_UNIX, SOCK_DGRAM, 0);
     }
 
     /**
