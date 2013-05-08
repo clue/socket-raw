@@ -204,10 +204,13 @@ class Factory
             $scheme = 'tcp';
         }
 
+        $hasScheme = false;
+
         $pos = strpos($address, '://');
         if ($pos !== false) {
             $scheme = substr($address, 0, $pos);
             $address = substr($address, $pos + 3);
+            $hasScheme = true;
         }
 
         if (strpos($address, ':') !== strrpos($address, ':') && in_array($scheme, array('tcp', 'udp', 'icmp'))) {
@@ -231,6 +234,12 @@ class Factory
             $socket = $this->createIcmp4();
         } elseif ($scheme === 'icmp6') {
             $socket = $this->createIcmp6();
+            if ($hasScheme) {
+                // scheme was stripped from address, resulting IPv6 must not
+                // have a port (due to ICMP) and thus must not be enclosed in
+                // square brackets
+                $address = trim($address, '[]');
+            }
         } else {
             throw new InvalidArgumentException('Invalid address scheme given');
         }
