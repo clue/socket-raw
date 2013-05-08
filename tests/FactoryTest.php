@@ -74,6 +74,15 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    public function testCreateClientUdp6UnboundWorks()
+    {
+        // skip if no IPv6
+
+        $socket = $this->factory->createClient('udp://[::1]:3');
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+    }
+
     public function testCreateServerTcp4Random()
     {
         $socket = $this->factory->createServer('tcp://localhost:0');
@@ -135,6 +144,24 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
 
         unlink($path);
+    }
+
+    public function testCreateServerIcmp4()
+    {
+        // skip if no IPv6
+
+        try {
+            $socket = $this->factory->createServer('icmp://0.0.0.0');
+        }
+        catch (Exception $e) {
+            if ($e->getCode() === SOCKET_EPERM) {
+                // skip if not root
+                return $this->markTestSkipped('No access to ICMPv4 socket (only root can do so)');
+            }
+            throw $e;
+        }
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
     public function testCreateTcp4()
