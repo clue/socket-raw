@@ -95,20 +95,36 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
 
     public function testCreateIcmp4()
     {
-        // skip if not root
-
         $factory = new Factory();
-        $socket = $factory->createIcmp4();
+        try {
+            $socket = $factory->createIcmp4();
+        }
+        catch (Exception $e) {
+            if ($e->getCode() === SOCKET_EPERM) {
+                // skip if not root
+                return $this->markTestSkipped('No access to ICMPv4 socket (only root can do so)');
+            }
+            throw $e;
+        }
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
     public function testCreateIcmp6()
     {
-        // skip if not root or no IPv6
+        // skip if no IPv6
 
         $factory = new Factory();
-        $socket = $factory->createIcmp6();
+        try {
+            $socket = $factory->createIcmp6();
+        }
+        catch (Exception $e) {
+            if ($e->getCode() === SOCKET_EPERM) {
+                // skip if not root
+                return $this->markTestSkipped('No access to ICMPv6 socket (only root can do so)');
+            }
+            throw $e;
+        }
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
