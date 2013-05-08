@@ -164,6 +164,24 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    public function testCreateServerIcmp6()
+    {
+        // skip if no IPv6
+
+        try {
+            $socket = $this->factory->createServer('icmp6://[::1]');
+        }
+        catch (Exception $e) {
+            if ($e->getCode() === SOCKET_EPERM) {
+                // skip if not root
+                return $this->markTestSkipped('No access to ICMPv6 socket (only root can do so)');
+            }
+            throw $e;
+        }
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+    }
+
     public function testCreateTcp4()
     {
         $socket = $this->factory->createTcp4();
