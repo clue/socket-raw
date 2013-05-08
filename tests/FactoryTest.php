@@ -142,10 +142,90 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
 
     public static function testCreateProvider()
     {
+        // only return TCP/IP and UDP/IP as the above tests should already cover other sockets
         return array(
             array(AF_INET, SOCK_STREAM, SOL_TCP),
             array(AF_INET, SOCK_DGRAM, SOL_UDP)
         );
+    }
+
+    public function testCreatePair()
+    {
+        // skip if not unix
+
+        $factory = new Factory();
+        $sockets = $factory->createPair(AF_UNIX, SOCK_STREAM, 0);
+
+        $this->assertCount(2, $sockets);
+        $this->assertInstanceOf('Socket\Raw\Socket', $sockets[0]);
+        $this->assertInstanceOf('Socket\Raw\Socket', $sockets[1]);
+    }
+
+    public function testCreateListenRandom()
+    {
+        $factory = new Factory();
+
+        // listen on a random free port
+        $socket = $factory->createListen(0);
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+    }
+
+    public function testCreateFromStringTcp4()
+    {
+        $factory = new Factory();
+
+        $address = 'tcp://127.0.0.1:80';
+        $socket = $factory->createFromString($address, $scheme);
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+        $this->assertEquals('127.0.0.1:80', $address);
+        $this->assertEquals('tcp', $scheme);
+    }
+
+    /**
+     * assume default scheme 'tcp'
+     */
+    public function testCreateFromStringSchemelessTcp4()
+    {
+        $factory = new Factory();
+
+        $address = '127.0.0.1:80';
+        $socket = $factory->createFromString($address, $scheme);
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+        $this->assertEquals('127.0.0.1:80', $address);
+        $this->assertEquals('tcp', $scheme);
+    }
+
+    /**
+     * scheme is actually 'tcp6' for IPv6 addresses
+     */
+    public function testCreateFromStringTcp6()
+    {
+        $factory = new Factory();
+
+        $address = 'tcp://[::1]:80';
+        $socket = $factory->createFromString($address, $scheme);
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+        $this->assertEquals('[::1]:80', $address);
+        $this->assertEquals('tcp6', $scheme);
+    }
+
+    /**
+     * assume scheme 'tcp6' for IPv6 addresses
+     */
+    public function testCreateFromStringSchemelessTcp6()
+    {
+        $factory = new Factory();
+
+        $address = '[::1]:80';
+        $socket = $factory->createFromString($address, $scheme);
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+        $this->assertEquals('[::1]:80', $address);
+        $this->assertEquals('tcp6', $scheme);
     }
 
 }
