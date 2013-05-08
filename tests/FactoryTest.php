@@ -181,6 +181,17 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         );
     }
 
+    public function testCreateInvalid()
+    {
+        try {
+            $this->factory->create(0, 1, 2);
+        }
+        catch (Exception $e) {
+            return;
+        }
+        $this->fail();
+    }
+
     public function testCreatePair()
     {
         // skip if not unix
@@ -192,12 +203,36 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $sockets[1]);
     }
 
+    public function testCreatePairInvalid()
+    {
+        try {
+            $this->factory->createPair(0, 1, 2);
+        }
+        catch (Exception $e) {
+            return;
+        }
+        $this->fail();
+    }
+
     public function testCreateListenRandom()
     {
         // listen on a random free port
         $socket = $this->factory->createListen(0);
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+    }
+
+    public function testCreateListenInvalid()
+    {
+        try {
+            // should only support passing a port number
+            // turns out excessive numbers seem to be sanitized modulo maximum port range
+            $this->factory->createListen('localhost',-1);
+        }
+        catch (Exception $e) {
+            return;
+        }
+        $this->fail('Creating listening port should fail');
     }
 
     public function testCreateFromStringTcp4()
@@ -247,6 +282,21 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
         $this->assertEquals('[::1]:80', $address);
         $this->assertEquals('tcp6', $scheme);
+    }
+
+    /**
+     * creating socket for invalid scheme should fail
+     */
+    public function testCreateFromStringInvalid()
+    {
+        $address = 'invalid://whatever';
+        try {
+            $this->factory->createFromString($address, $scheme);
+        }
+        catch (Exception $e) {
+            return;
+        }
+        $this->fail('Creating socket for invalid scheme should fail');
     }
 
 }
