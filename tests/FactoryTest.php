@@ -17,6 +17,22 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->factory = new Factory();
     }
 
+    public function testSupportsIpv6()
+    {
+        // TODO: check this check
+        if (!defined('AF_INET6')) {
+            $this->markTestSkipped('This system does not seem to support IPv6 sockets / addressing');
+        }
+    }
+
+    public function testSupportsUnix()
+    {
+        // TODO: check this check
+        if (!defined('AF_UNIX')) {
+            $this->markTestSkipped('This system does not seem to support UNIX and UDG sockets');
+        }
+    }
+
     public function testConstructorWorks()
     {
         $this->assertInstanceOf('Socket\Raw\Factory', $this->factory);
@@ -74,10 +90,11 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    /**
+     * @depends testSupportsIpv6
+     */
     public function testCreateClientUdp6UnboundWorks()
     {
-        // skip if no IPv6
-
         $socket = $this->factory->createClient('udp://[::1]:3');
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
@@ -104,10 +121,11 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    /**
+     * @depends testSupportsUnix
+     */
     public function testCreateServerUnix()
     {
-        // skip if not unix
-
         $path = '/tmp/randomfactorytests.sock';
 
         $socket = $this->factory->createServer('unix://' . $path);
@@ -117,10 +135,11 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         unlink($path);
     }
 
+    /**
+     * @depends testSupportsUnix
+     */
     public function testCreateServerUnixFailInvalidPath()
     {
-        // skip if not unix
-
         $path = '/a/path/that/can/not/be/bound/to.sock';
 
         try {
@@ -133,6 +152,9 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->fail('Expected to fail on invalid path');
     }
 
+    /**
+     * @depends testSupportsUnix
+     */
     public function testCreateServerUdg()
     {
         // skip if not unix
@@ -148,8 +170,6 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
 
     public function testCreateServerIcmp4()
     {
-        // skip if no IPv6
-
         try {
             $socket = $this->factory->createServer('icmp://0.0.0.0');
         }
@@ -164,10 +184,11 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    /**
+     * @depends testSupportsIpv6
+     */
     public function testCreateServerIcmp6()
     {
-        // skip if no IPv6
-
         try {
             $socket = $this->factory->createServer('icmp6://[::1]');
         }
@@ -189,10 +210,11 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    /**
+     * @depends testSupportsIpv6
+     */
     public function testCreateTcp6()
     {
-        // skip if no IPv6
-
         $socket = $this->factory->createTcp6();
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
@@ -205,28 +227,31 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    /**
+     * @depends testSupportsIpv6
+     */
     public function testCreateUdp6()
     {
-        // skip if no IPv6
-
         $socket = $this->factory->createUdp6();
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    /**
+     * @depends testSupportsUnix
+     */
     public function testCreateUnix()
     {
-        // skip if not unix
-
         $socket = $this->factory->createUnix();
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    /**
+     * @depends testSupportsUnix
+     */
     public function testCreateUdg()
     {
-        // skip if not unix
-
         $socket = $this->factory->createUdg();
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
@@ -248,10 +273,11 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    /**
+     * @depends testSupportsIpv6
+     */
     public function testCreateIcmp6()
     {
-        // skip if no IPv6
-
         try {
             $socket = $this->factory->createIcmp6();
         }
@@ -296,10 +322,11 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->fail();
     }
 
+    /**
+     * @depends testSupportsUnix
+     */
     public function testCreatePair()
     {
-        // skip if not unix
-
         $sockets = $this->factory->createPair(AF_UNIX, SOCK_STREAM, 0);
 
         $this->assertCount(2, $sockets);
@@ -364,6 +391,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
 
     /**
      * scheme is actually 'tcp6' for IPv6 addresses
+     *
+     * @depends testSupportsIpv6
      */
     public function testCreateFromStringTcp6()
     {
@@ -377,6 +406,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
 
     /**
      * assume scheme 'tcp6' for IPv6 addresses
+     *
+     * @depends testSupportsIpv6
      */
     public function testCreateFromStringSchemelessTcp6()
     {
