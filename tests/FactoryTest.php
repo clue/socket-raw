@@ -22,6 +22,62 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Factory', $this->factory);
     }
 
+    public function testCreateClientTcp4()
+    {
+        $socket = $this->factory->createClient('tcp://www.google.com:80');
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+    }
+
+    public function testCreateClientSchemelessTcp4()
+    {
+        $socket = $this->factory->createClient('www.google.com:80');
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+    }
+
+    public function testCreateClientTcp4Fail()
+    {
+        try {
+            $this->factory->createClient('tcp://localhost:2');
+        }
+        catch (Exception $e) {
+            if ($e->getCode() === SOCKET_ECONNREFUSED) {
+                return;
+            }
+        }
+
+        $this->fail('Expected to be unable to connect to localhost:2');
+    }
+
+    public function testCreateServerTcp4Random()
+    {
+        $socket = $this->factory->createServer('tcp://localhost:0');
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+    }
+
+    public function testCreateServerSchemelessTcp4Random()
+    {
+        $socket = $this->factory->createServer('localhost:0');
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+    }
+
+    public function testCreateServerUdp4Random()
+    {
+        $socket = $this->factory->createServer('udp://localhost:0');
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+    }
+
+    public function testCreateClientUdp4()
+    {
+        $socket = $this->factory->createClient('udp://8.8.8.8:53');
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+    }
+
     public function testCreateTcp4()
     {
         $socket = $this->factory->createTcp4();
