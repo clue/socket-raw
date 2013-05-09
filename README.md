@@ -2,6 +2,8 @@
 
 Simple and lightweight OOP wrapper for PHP's low level sockets extension (ext-sockets)
 
+[![Build Status](https://travis-ci.org/clue/socket-raw.png?branch=master)](https://travis-ci.org/clue/socket-raw)
+
 ## Quickstart example
 
 Once [installed](#install), you can use the following example to send and receive HTTP messages:
