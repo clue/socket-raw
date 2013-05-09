@@ -74,7 +74,7 @@ The recommended way to install this library is [through composer](http://getcomp
 ```JSON
 {
     "require": {
-        "clue/socket-raw": "dev-master"
+        "clue/socket-raw": "0.1.*"
     }
 }
 ```
