@@ -5,4 +5,5 @@ php:
 before_script:
   - composer install --dev
 script:
-  - sudo -E phpunit
+  - phpunit=`which phpunit`
+  - sudo $phpunit
