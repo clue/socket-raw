@@ -6,4 +6,4 @@ before_script:
   - composer install --dev
 script:
   - phpunit=`which phpunit`
-  - sudo $phpunit
+  - sudo $phpunit --coverage-text
