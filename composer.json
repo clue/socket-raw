@@ -4,6 +4,12 @@
     "keywords": ["socket", "stream", "datagram", "dgram", "client", "server", "ipv6", "tcp", "udp", "icmp", "unix", "udg"],
     "homepage": "https://github.com/clue/socket-raw",
     "license": "MIT",
+    "authors": [
+        {
+            "name": "Christian Lück",
+            "email": "christian@lueck.tv"
+        }
+    ],
     "autoload": {
         "psr-0": {"Socket": ""}
     },
