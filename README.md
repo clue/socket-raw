@@ -8,7 +8,6 @@ Simple and lightweight OOP wrapper for PHP's low level sockets extension (ext-so
 Once [installed](#install), you can use the following example to send and receive HTTP messages:
 
 ```php
-
 $factory = new \Socket\Raw\Factory();
 
 $socket = $factory->createClient('www.google.com:80');
@@ -21,7 +20,6 @@ $socket->write("GET / HTTP/1.1\r\n\Host: www.google.com\r\n\r\n");
 var_dump($socket->read(8192));
 
 $socket->close();
-
 ```
 
 ## Introduction
@@ -66,7 +64,7 @@ Less commonly used, it provides access to create (unconnected) sockets for vario
 
 ### `Socket` API
 
-As discuess above, the `Socket` class is merely an object-oriented wrapper around a socket resource. As such, it helps if you're familar with socket programming in general. You can refer to PHP's fairly good [socket API](http://www.php.net/manual/en/ref.sockets.php) or the docblock comments in the `Socket` class to get your started.
+As discussed above, the `Socket` class is merely an object-oriented wrapper around a socket resource. As such, it helps if you're familar with socket programming in general. You can refer to PHP's fairly good [socket API documentation](http://www.php.net/manual/en/ref.sockets.php) or the docblock comments in the `Socket` class to get you started.
 
 ## Install
 
@@ -83,13 +81,13 @@ The recommended way to install this library is [through composer](http://getcomp
 ## Tests
 
 To run the test suite, you need PHPUnit. Go to the project root and run:
-````
+````bash
 $ phpunit tests
 ````
 
 Note: The test suite contains tests for ICMP sockets which require root access
 on unix/linux systems. Therefor some tests will be skipped unless you run
-`sudo phpunit tests` to execte the full test suite.
+`sudo phpunit tests` to execute the full test suite.
 
 ## License
 
