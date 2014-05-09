@@ -3,7 +3,8 @@ php:
   - 5.4
   - 5.3
 before_script:
-  - composer install --dev --dev --prefer-source --no-interaction
+  - composer install --dev --prefer-source --no-interaction
+  - wget https://phar.phpunit.de/phpunit.phar
 script:
-  - phpunit=`which phpunit`
-  - sudo $phpunit --coverage-text
+  - php=~/.phpenv/versions/$(phpenv version-name)/bin/php
+  - sudo $php phpunit.phar --coverage-text
