@@ -11,7 +11,7 @@
         }
     ],
     "autoload": {
-        "psr-0": {"Socket": ""}
+        "psr-4": {"Socket\\Raw\\": "src"}
     },
     "require": {
         "ext-sockets": "*",
