@@ -353,19 +353,6 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
-    public function testCreateListenInvalid()
-    {
-        try {
-            // should only support passing a port number
-            // turns out excessive numbers seem to be sanitized modulo maximum port range
-            $this->factory->createListen('localhost',-1);
-        }
-        catch (Exception $e) {
-            return;
-        }
-        $this->fail('Creating listening port should fail');
-    }
-
     public function testCreateFromStringTcp4()
     {
         $address = 'tcp://127.0.0.1:80';
