@@ -402,10 +402,12 @@ class Socket
     {
         $string = socket_strerror($code);
 
-        $consts = get_defined_constants(true);
-        $const = array_search($code, $consts['sockets'], true);
-        if ($const !== false) {
-            $string .= ' (' . $const . ')';
+        // search constant starting with SOCKET_ for this error code
+        foreach (get_defined_constants() as $key => $value) {
+            if($value === $code && strpos($key, 'SOCKET_') === 0) {
+                $string .= ' (' . $key . ')';
+                break;
+            }
         }
 
         return $string;
