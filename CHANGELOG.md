@@ -4,7 +4,7 @@ This file is a manually maintained list of changes for each release. Feel free
 to add your changes here when sending pull requests. Also send corrections if
 you spot any mistakes.
 
-## 1.0.0 (2014-05-xx)
+## 1.0.0 (2014-05-10)
 
 * Feature: Improved errors reporting through dedicated `Exception`
   ([#6](https://github.com/clue/socket-raw/pull/6))
