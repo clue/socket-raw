@@ -1,6 +1,7 @@
 <?php
 
 use Socket\Raw\Factory;
+use Socket\Raw\Socket;
 
 (include_once __DIR__.'/../vendor/autoload.php') OR die(PHP_EOL.'ERROR: composer autoloader not found, run "composer install" or see README for instructions'.PHP_EOL);
 
@@ -351,6 +352,22 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
         $socket = $this->factory->createListen(0);
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+
+        return $socket;
+    }
+
+    /**
+     *
+     * @param Socket $socket
+     * @depends testCreateListenRandom
+     * @expectedException Exception
+     */
+    public function testCreateListenInUseFails(Socket $socket)
+    {
+        $address = $socket->getSockName();
+        $port = substr($address, strrpos($address, ':') + 1);
+
+        $this->factory->createListen($port);
     }
 
     public function testCreateFromStringTcp4()
