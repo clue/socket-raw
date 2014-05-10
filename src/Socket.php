@@ -246,6 +246,7 @@ class Socket
      *
      * @param int|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
      * @return boolean true = socket ready (read will not block), false = timeout expired, socket is not ready
+     * @throws Exception on error
      * @uses socket_select()
      */
     public function selectRead($sec = 0)
@@ -253,7 +254,7 @@ class Socket
         $r = array($this->resource);
         $ret = @socket_select($r, $x, $x, $sec);
         if ($ret === false) {
-            throw Exception::createFromSocketResource($this->resource);
+            throw Exception::createFromGlobalSocketOperation('Failed to select socket for reading');
         }
         return !!$ret;
     }
@@ -263,6 +264,7 @@ class Socket
      *
      * @param int|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
      * @return boolean true = socket ready (write will not block), false = timeout expired, socket is not ready
+     * @throws Exception on error
      * @uses socket_select()
      */
     public function selectWrite($sec = 0)
@@ -270,7 +272,7 @@ class Socket
         $w = array($this->resource);
         $ret = @socket_select($x, $w, $x, $sec);
         if ($ret === false) {
-            throw Exception::createFromSocketResource($this->resource);
+            throw Exception::createFromGlobalSocketOperation('Failed to select socket for writing');
         }
         return !!$ret;
     }
