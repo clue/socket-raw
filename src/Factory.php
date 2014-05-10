@@ -2,7 +2,6 @@
 
 namespace Socket\Raw;
 
-use \Exception;
 use \InvalidArgumentException;
 
 class Factory
@@ -152,7 +151,10 @@ class Factory
      */
     public function create($domain, $type, $protocol)
     {
-        $sock = $this->assertSuccess(@socket_create($domain, $type, $protocol), 'socket');
+        $sock = @socket_create($domain, $type, $protocol);
+        if ($sock === false) {
+            throw Exception::createFromGlobalSocketOperation('Unable to create socket');
+        }
         return new Socket($sock);
     }
 
@@ -168,7 +170,10 @@ class Factory
      */
     public function createPair($domain, $type, $protocol)
     {
-        $this->assertSuccess(@socket_create_pair($domain, $type, $protocol, $pair), 'pair of sockets');
+        $ret = @socket_create_pair($domain, $type, $protocol, $pair);
+        if ($ret === false) {
+            throw Exception::createFromGlobalSocketOperation('Unable to create pair of sockets');
+        }
         return array(new Socket($pair[0]), new Socket($pair[1]));
     }
 
@@ -184,7 +189,10 @@ class Factory
      */
     public function createListen($port, $backlog = 128)
     {
-        $sock = $this->assertSuccess(@socket_create_listen($port, $backlog), 'listening socket');
+        $sock = @socket_create_listen($port, $backlog);
+        if ($sock === false) {
+            throw Exception::createFromGlobalSocketOperation('Unable to create listening socket');
+        }
         return new Socket($sock);
     }
 
@@ -244,32 +252,5 @@ class Factory
             throw new InvalidArgumentException('Invalid address scheme given');
         }
         return $socket;
-    }
-
-    /**
-     * assert the given $sock is not boolean false, which is an error condition
-     *
-     * @param mixed $sock
-     * @return mixed given $sock as-is
-     * @throws Exception if given $sock is boolean false
-     * @uses socket_last_error() to get last error code
-     * @uses socket_clear_error() to clear error code
-     */
-    private function assertSuccess($sock, $title = 'socket')
-    {
-        if ($sock === false) {
-            $code = socket_last_error();
-            socket_clear_error();
-
-            throw new Exception('Unable to create ' . $title . ': ' . socket_strerror($code), $code);
-        } else if ($sock === null) {
-            // create_* methods may actually return null instead of false
-            // for invalid arguments etc. Use PHP's error buffer instead of
-            // the socket one
-            $error = error_get_last();
-
-            throw new Exception('Unable to create ' . $title . ': ' . $error['message']);
-        }
-        return $sock;
     }
 }

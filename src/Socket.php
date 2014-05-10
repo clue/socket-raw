@@ -2,8 +2,6 @@
 
 namespace Socket\Raw;
 
-use \Exception;
-
 /**
  * simple and lightweight OOP wrapper for the low level sockets extension (ext-sockets)
  *
@@ -54,7 +52,10 @@ class Socket
      */
     public function accept()
     {
-        $resource = $this->assertSuccess(@socket_accept($this->resource));
+        $resource = @socket_accept($this->resource);
+        if ($resource === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
         return new Socket($resource);
     }
 
@@ -70,7 +71,10 @@ class Socket
      */
     public function bind($address)
     {
-        $this->assertSuccess(@socket_bind($this->resource, $this->unformatAddress($address, $port), $port));
+        $ret = @socket_bind($this->resource, $this->unformatAddress($address, $port), $port);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
         return $this;
     }
 
@@ -103,7 +107,10 @@ class Socket
      */
     public function connect($address)
     {
-        $this->assertSuccess(@socket_connect($this->resource, $this->unformatAddress($address, $port), $port));
+        $ret = @socket_connect($this->resource, $this->unformatAddress($address, $port), $port);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
         return $this;
     }
 
@@ -118,7 +125,11 @@ class Socket
      */
     public function getOption($level, $optname)
     {
-        return $this->assertSuccess(@socket_get_option($this->resource, $level, $optname));
+        $value = @socket_get_option($this->resource, $level, $optname);
+        if ($value === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
+        return $value;
     }
 
     /**
@@ -130,7 +141,10 @@ class Socket
      */
     public function getPeerName()
     {
-        $this->assertSuccess(@socket_getpeername($this->resource, $address, $port));
+        $ret = @socket_getpeername($this->resource, $address, $port);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
         return $this->formatAddress($address, $port);
     }
 
@@ -143,7 +157,10 @@ class Socket
      */
     public function getSockName()
     {
-        $this->assertSuccess(@socket_getsockname($this->resource, $address, $port));
+        $ret = @socket_getsockname($this->resource, $address, $port);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
         return $this->formatAddress($address, $port);
     }
 
@@ -158,7 +175,10 @@ class Socket
      */
     public function listen($backlog = 0)
     {
-        $this->assertSuccess(@socket_listen($this->resource, $backlog));
+        $ret = @socket_listen($this->resource, $backlog);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
         return $this;
     }
 
@@ -173,7 +193,11 @@ class Socket
      */
     public function read($length)
     {
-        return $this->assertSuccess(@socket_read($this->resource, $length));
+        $data = @socket_read($this->resource, $length);
+        if ($data === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
+        return $data;
     }
 
     /**
@@ -189,7 +213,10 @@ class Socket
      */
     public function recv($length, $flags)
     {
-        $this->assertSuccess(@socket_recv($this->resource, $buffer, $length, $flags));
+        $ret = @socket_recv($this->resource, $buffer, $length, $flags);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
         return $buffer;
     }
 
@@ -206,7 +233,10 @@ class Socket
      */
     public function recvFrom($length, $flags, &$remote)
     {
-        $this->assertSuccess(@socket_recvfrom($this->resource, $buffer, $length, $flags, $address, $port));
+        $ret = @socket_recvfrom($this->resource, $buffer, $length, $flags, $address, $port);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
         $remote = $this->formatAddress($address, $port);
         return $buffer;
     }
@@ -216,12 +246,17 @@ class Socket
      *
      * @param int|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
      * @return boolean true = socket ready (read will not block), false = timeout expired, socket is not ready
+     * @throws Exception on error
      * @uses socket_select()
      */
     public function selectRead($sec = 0)
     {
         $r = array($this->resource);
-        return !!$this->assertSuccess(@socket_select($r, $x, $x, $sec));
+        $ret = @socket_select($r, $x, $x, $sec);
+        if ($ret === false) {
+            throw Exception::createFromGlobalSocketOperation('Failed to select socket for reading');
+        }
+        return !!$ret;
     }
 
     /**
@@ -229,12 +264,17 @@ class Socket
      *
      * @param int|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
      * @return boolean true = socket ready (write will not block), false = timeout expired, socket is not ready
+     * @throws Exception on error
      * @uses socket_select()
      */
     public function selectWrite($sec = 0)
     {
         $w = array($this->resource);
-        return !!$this->assertSuccess(@socket_select($x, $w, $x, $sec));
+        $ret = @socket_select($x, $w, $x, $sec);
+        if ($ret === false) {
+            throw Exception::createFromGlobalSocketOperation('Failed to select socket for writing');
+        }
+        return !!$ret;
     }
 
     /**
@@ -250,7 +290,11 @@ class Socket
      */
     public function send($buffer, $flags)
     {
-        return $this->assertSuccess(@socket_send($this->resource, $buffer, strlen($buffer), $flags));
+        $ret = @socket_send($this->resource, $buffer, strlen($buffer), $flags);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
+        return $ret;
     }
 
     /**
@@ -266,7 +310,11 @@ class Socket
      */
     public function sendTo($buffer, $flags, $remote)
     {
-        return $this->assertSuccess(@socket_sendto($this->resource, $buffer, strlen($buffer), $flags, $this->unformatAddress($remote, $port), $port));
+        $ret = @socket_sendto($this->resource, $buffer, strlen($buffer), $flags, $this->unformatAddress($remote, $port), $port);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
+        return $ret;
     }
 
     /**
@@ -280,7 +328,10 @@ class Socket
      */
     public function setBlocking($toggle = true)
     {
-        $this->assertSuccess($toggle ? @socket_set_block($this->resource) : @socket_set_nonblock($this->resource));
+        $ret = $toggle ? @socket_set_block($this->resource) : @socket_set_nonblock($this->resource);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
         return $this;
     }
 
@@ -297,7 +348,10 @@ class Socket
      */
     public function setOption($level, $optname, $optval)
     {
-        $this->assertSuccess(@socket_set_option($this->resource, $level, $optname, $optval));
+        $ret = @socket_set_option($this->resource, $level, $optname, $optval);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
         return $this;
     }
 
@@ -312,7 +366,10 @@ class Socket
      */
     public function shutdown($how = 2)
     {
-        $this->assertSuccess(@socket_shutdown($this->resource, $how));
+        $ret = @socket_shutdown($this->resource, $how);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
         return $this;
     }
 
@@ -327,7 +384,11 @@ class Socket
      */
     public function write($buffer)
     {
-        return $this->assertSuccess(@socket_write($this->resource, $buffer));
+        $ret = @socket_write($this->resource, $buffer);
+        if ($ret === false) {
+            throw Exception::createFromSocketResource($this->resource);
+        }
+        return $ret;
     }
 
     /**
@@ -364,53 +425,9 @@ class Socket
     {
         $code = $this->getOption(SOL_SOCKET, SO_ERROR);
         if ($code !== 0) {
-            throw new Exception('Socket error: ' . $this->getErrorMessage($code), $code);
+            throw Exception::createFromCode($code, 'Socket error');
         }
         return $this;
-    }
-
-    /**
-     * assert the given $val is not boolean false, which is an error condition
-     *
-     * @param mixed $val
-     * @return mixed given $val as-is
-     * @throws Exception if given $val is boolean false
-     * @uses socket_last_error() to get last error code
-     * @uses socket_clear_error() to clear error code
-     * @uses self::getErrorMessage() to translate error code to error message
-     */
-    protected function assertSuccess($val)
-    {
-        if ($val === false) {
-            $code = socket_last_error($this->resource);
-            socket_clear_error($this->resource);
-
-            throw new Exception('Socket operation failed: ' . $this->getErrorMessage($code), $code);
-        }
-        return $val;
-    }
-
-    /**
-     * get error message for given error code
-     *
-     * @param int $code error code
-     * @return string
-     * @uses socket_strerror() to translate error code to error message
-     * @uses get_defined_constants() to check for related error constant
-     */
-    protected function getErrorMessage($code)
-    {
-        $string = socket_strerror($code);
-
-        // search constant starting with SOCKET_ for this error code
-        foreach (get_defined_constants() as $key => $value) {
-            if($value === $code && strpos($key, 'SOCKET_') === 0) {
-                $string .= ' (' . $key . ')';
-                break;
-            }
-        }
-
-        return $string;
     }
 
     /**
