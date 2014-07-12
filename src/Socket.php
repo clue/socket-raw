@@ -82,7 +82,7 @@ class Socket
      * close this socket
      *
      * ATTENTION: make sure to NOT re-use this socket instance after closing it!
-     * its socket resource is removed and all furhter operations will fail!
+     * its socket resource remains closed and most further operations will fail!
      *
      * @return self $this (chainable)
      * @see self::shutdown() should be called before closing socket
@@ -90,10 +90,7 @@ class Socket
      */
     public function close()
     {
-        if ($this->resource !== false) {
-            socket_close($this->resource);
-            $this->resource = false;
-        }
+        socket_close($this->resource);
         return $this;
     }
 
