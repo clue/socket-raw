@@ -140,4 +140,47 @@ class SocketTest extends PHPUnit_Framework_TestCase{
         $this->assertGreaterThan(0.5, $time);
         $this->assertLessThan(1.0, $time);
     }
+
+    public function testConnectTimeoutGoogle()
+    {
+        $socket = $this->factory->createTcp4();
+
+        $this->assertSame($socket, $socket->connectTimeout('google.com:80', 10.0));
+
+        $socket->close();
+    }
+
+    public function testConnectTimeoutUdpImmediately()
+    {
+        $socket = $this->factory->createUdp4();
+
+        $socket->connectTimeout('google.com:8000', 10);
+    }
+
+    public function testConnectTimeoutFailTimeout()
+    {
+        $socket = $this->factory->createTcp4();
+
+        $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ETIMEDOUT);
+
+        $socket->connectTimeout('google.com:80', 0.001);
+    }
+
+    public function testConnectTimeoutFailUnbound()
+    {
+        $socket = $this->factory->createTcp4();
+
+        $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ECONNREFUSED);
+
+        $socket->connectTimeout('localhost:2', 0.5);
+    }
+
+    public function testConnectTimeoutFailAlreadyConnected()
+    {
+        $socket = $this->factory->createClient('google.com:80');
+
+        $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_EISCONN);
+
+        $socket->connectTimeout('google.com:8000', 10);
+    }
 }

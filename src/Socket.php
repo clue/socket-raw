@@ -115,6 +115,55 @@ class Socket
     }
 
     /**
+     * Initiates a new connection to given address, wait for up to $timeout seconds
+     *
+     * The given $timeout parameter is an upper bound, a maximum time to wait
+     * for the connection to be either accepted or rejected.
+     *
+     * The resulting socket resource will be set to non-blocking mode,
+     * regardless of its previous state and whether this method succedes or
+     * if it fails. Make sure to reset with `setBlocking(true)` if you want to
+     * continue using blocking calls.
+     *
+     * @param string $address either of IPv4:port, hostname:port, [IPv6]:port, unix-path
+     * @param float  $timeout maximum time to wait (in seconds)
+     * @return self $this (chainable)
+     * @throws Exception on error
+     * @uses self::setBlocking() to enable non-blocking mode
+     * @uses self::connect() to initiate the connection
+     * @uses self::selectWrite() to wait for the connection to complete
+     * @uses self::assertAlive() to check connection state
+     */
+    public function connectTimeout($address, $timeout)
+    {
+        $this->setBlocking(false);
+
+        try {
+            // socket is non-blocking, so connect should emit EINPROGRESS
+            $this->connect($address);
+
+            // socket is already connected immediately?
+            return $this;
+        }
+        catch (Exception $e) {
+            // non-blocking connect() should be EINPROGRESS => otherwise re-throw
+            if ($e->getCode() !== SOCKET_EINPROGRESS) {
+                throw $e;
+            }
+
+            // connection should be completed (or rejected) within timeout
+            if ($this->selectWrite($timeout) === false) {
+                throw new Exception('Timed out while waiting for connection', SOCKET_ETIMEDOUT);
+            }
+
+            // confirm connection success (or fail if connected has been rejected)
+            $this->assertAlive();
+
+            return $this;
+        }
+    }
+
+    /**
      * get socket option
      *
      * @param int $level
