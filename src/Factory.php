@@ -19,7 +19,16 @@ class Factory
     public function createClient($address)
     {
         $socket = $this->createFromString($address, $scheme);
-        return $socket->connect($address);
+
+        try {
+            $socket->connect($address);
+        }
+        catch (Exception $e) {
+            $socket->close();
+            throw $e;
+        }
+
+        return $socket;
     }
 
     /**
@@ -35,11 +44,19 @@ class Factory
     public function createServer($address)
     {
         $socket = $this->createFromString($address, $scheme);
-        $socket->bind($address);
 
-        if ($socket->getType() === SOCK_STREAM) {
-            $socket->listen();
+        try {
+            $socket->bind($address);
+
+            if ($socket->getType() === SOCK_STREAM) {
+                $socket->listen();
+            }
         }
+        catch (Exception $e) {
+            $socket->close();
+            throw $e;
+        }
+
         return $socket;
     }
 
