@@ -244,15 +244,16 @@ class Socket
     /**
      * check socket to see if a read/recv/revFrom will not block
      *
-     * @param int|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
+     * @param float|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
      * @return boolean true = socket ready (read will not block), false = timeout expired, socket is not ready
      * @throws Exception on error
      * @uses socket_select()
      */
     public function selectRead($sec = 0)
     {
+        $usec = $sec === null ? null : (($sec - floor($sec)) * 1000000);
         $r = array($this->resource);
-        $ret = @socket_select($r, $x, $x, $sec);
+        $ret = @socket_select($r, $x, $x, $sec, $usec);
         if ($ret === false) {
             throw Exception::createFromGlobalSocketOperation('Failed to select socket for reading');
         }
@@ -262,15 +263,16 @@ class Socket
     /**
      * check socket to see if a write/send/sendTo will not block
      *
-     * @param int|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
+     * @param float|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
      * @return boolean true = socket ready (write will not block), false = timeout expired, socket is not ready
      * @throws Exception on error
      * @uses socket_select()
      */
     public function selectWrite($sec = 0)
     {
+        $usec = $sec === null ? null : (($sec - floor($sec)) * 1000000);
         $w = array($this->resource);
-        $ret = @socket_select($x, $w, $x, $sec);
+        $ret = @socket_select($x, $w, $x, $sec, $usec);
         if ($ret === false) {
             throw Exception::createFromGlobalSocketOperation('Failed to select socket for writing');
         }

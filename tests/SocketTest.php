@@ -128,4 +128,16 @@ class SocketTest extends PHPUnit_Framework_TestCase{
 
         $this->assertSame($socket, $socket->close());
     }
+
+    public function testSelectFloat()
+    {
+        $socket = $this->factory->createClient('google.com:80');
+
+        $time = microtime(true);
+        $this->assertFalse($socket->selectRead(0.5));
+        $time = microtime(true) - $time;
+
+        $this->assertGreaterThan(0.5, $time);
+        $this->assertLessThan(1.0, $time);
+    }
 }
