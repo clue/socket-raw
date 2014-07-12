@@ -163,7 +163,7 @@ class SocketTest extends PHPUnit_Framework_TestCase{
 
         $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ETIMEDOUT);
 
-        $socket->connectTimeout('google.com:80', 0.001);
+        $socket->connectTimeout('default.com:81', 0.001);
     }
 
     public function testConnectTimeoutFailUnbound()
