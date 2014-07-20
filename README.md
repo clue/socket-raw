@@ -1,4 +1,4 @@
-# clue/socket-raw [![Build Status](https://travis-ci.org/clue/socket-raw.png?branch=master)](https://travis-ci.org/clue/socket-raw)
+# clue/socket-raw [![Build Status](https://travis-ci.org/clue/php-socket-raw.svg?branch=master)](https://travis-ci.org/clue/php-socket-raw)
 
 Simple and lightweight OOP wrapper for PHP's low level sockets extension (ext-sockets)
 
