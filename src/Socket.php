@@ -54,7 +54,7 @@ class Socket
     {
         $resource = @socket_accept($this->resource);
         if ($resource === false) {
-            throw Exception::createFromSocketResource($this->resource);
+            throw Exception::createFromGlobalSocketOperation();
         }
         return new Socket($resource);
     }

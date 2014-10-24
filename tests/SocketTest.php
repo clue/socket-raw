@@ -183,4 +183,51 @@ class SocketTest extends PHPUnit_Framework_TestCase{
 
         $socket->connectTimeout('google.com:8000', 10);
     }
+
+    public function testServerNonBlocking()
+    {
+        // bind to random port
+        $server = $this->factory->createListen(0);
+
+        $this->assertSame($server, $server->setBlocking(false));
+
+        return $server;
+    }
+
+    /**
+     * @depends testServerNonBlocking
+     * @expectedException Socket\Raw\Exception
+     * @expectedExceptionCode SOCKET_EAGAIN
+     */
+    public function testServerNonBlockingAcceptNobody(Socket $server)
+    {
+        $server->accept();
+    }
+
+    /**
+     * @depends testServerNonBlocking
+     */
+    public function testServerNonBlockingAcceptClient(Socket $server)
+    {
+        // create local client connected to the given server
+        $client = $this->factory->createClient($server->getSockName());
+
+        // client connected, so we can not accept() this socket
+        $peer = $server->accept();
+
+        // peer should be writable right away
+        $this->assertTrue($peer->selectWrite(0.1));
+        $peer->write('test');
+
+        // expect to receive the message in one chunk
+        $this->assertEquals('test', $client->read(100));
+
+        // disconnect local client
+        $client->close();
+
+        // disconnection should be detected withing 1s max
+        $this->assertTrue($peer->selectRead(1.0));
+
+        $peer->close();
+    }
 }
