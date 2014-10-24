@@ -22,6 +22,8 @@ var_dump($socket->read(8192));
 $socket->close();
 ```
 
+See also the [examples](examples).
+
 ## Introduction
 
 This library is merely a very thin wrapper around [`ext-sockets`](http://www.php.net/manual/en/book.sockets.php)
