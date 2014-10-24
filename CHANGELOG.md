@@ -4,6 +4,20 @@ This file is a manually maintained list of changes for each release. Feel free
 to add your changes here when sending pull requests. Also send corrections if
 you spot any mistakes.
 
+## 1.1.0 (2014-10-24)
+
+* Feature: Accept float timeouts like `0.5` for `Socket::selectRead()` and `Socket::selectWrite()`.
+  ([#8](https://github.com/clue/php-socket-raw/issues/8))
+
+* Feature: Add new `Socket::connectTimeout()` method.
+  ([#11](https://github.com/clue/php-socket-raw/pull/11))
+
+* Fix: Close invalid socket resource when `Factory` fails to create a `Socket`.
+  ([#12](https://github.com/clue/php-socket-raw/pull/12))
+
+* Fix: Calling `accept()` on an idle server socket emits right error code and message.
+  ([#14](https://github.com/clue/php-socket-raw/pull/14))
+
 ## 1.0.0 (2014-05-10)
 
 * Feature: Improved errors reporting through dedicated `Exception`
