@@ -196,12 +196,16 @@ class SocketTest extends PHPUnit_Framework_TestCase{
 
     /**
      * @depends testServerNonBlocking
-     * @expectedException Socket\Raw\Exception
-     * @expectedExceptionCode SOCKET_EAGAIN
      */
     public function testServerNonBlockingAcceptNobody(Socket $server)
     {
-        $server->accept();
+        try {
+            $server->accept();
+            $this->fail('accept() MUST throw an exception');
+        } catch (Exception $e) {
+            // code should usually be SOCKET_EAGAIN, hhvm uses SOCKET_EBADF, so let's play it safe
+            $this->assertNotEquals(0, $e->getCode());
+        }
     }
 
     /**
