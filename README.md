@@ -89,7 +89,7 @@ The recommended way to install this library is [through composer](http://getcomp
 ```JSON
 {
     "require": {
-        "clue/socket-raw": "~1.1"
+        "clue/socket-raw": "~1.2"
     }
 }
 ```

@@ -4,6 +4,11 @@ This file is a manually maintained list of changes for each release. Feel free
 to add your changes here when sending pull requests. Also send corrections if
 you spot any mistakes.
 
+## 1.2.0 (2015-03-18)
+
+* Feature: Expose optional `$type` parameter for `Socket::read()`
+  ([#16](https://github.com/clue/php-socket-raw/pull/16) by @Elbandi)
+
 ## 1.1.0 (2014-10-24)
 
 * Feature: Accept float timeouts like `0.5` for `Socket::selectRead()` and `Socket::selectWrite()`.
