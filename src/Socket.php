@@ -231,15 +231,19 @@ class Socket
     /**
      * read up to $length bytes from connect()ed / accept()ed socket
      *
+     * The $type parameter specifies if this should use either binary safe reading
+     * (PHP_BINARY_READ, the default) or stop at CR or LF characters (PHP_NORMAL_READ)
+     *
      * @param int $length maximum length to read
+     * @param int $type   either of PHP_BINARY_READ (the default) or PHP_NORMAL_READ
      * @return string
      * @throws Exception on error
      * @see self::recv() if you need to pass flags
      * @uses socket_read()
      */
-    public function read($length)
+    public function read($length, $type = PHP_BINARY_READ)
     {
-        $data = @socket_read($this->resource, $length);
+        $data = @socket_read($this->resource, $length, $type);
         if ($data === false) {
             throw Exception::createFromSocketResource($this->resource);
         }
