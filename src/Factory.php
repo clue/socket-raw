@@ -19,6 +19,7 @@ class Factory
      * @uses Socket::bind()
      * @uses Socket::connect()
      * @uses Socket::connectTimeout()
+     * @uses Socket::setBlocking()
      */
     public function createClient($address, $context = array())
     {
@@ -39,6 +40,10 @@ class Factory
                 $socket->setBlocking(true);
             } else {
                 $socket->connect($address);
+            }
+
+            if (isset($context['blocking'])) {
+                $socket->setBlocking($context['blocking']);
             }
         }
         catch (Exception $e) {
