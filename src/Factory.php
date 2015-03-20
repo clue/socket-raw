@@ -33,7 +33,7 @@ class Factory
                 $socket->bind($context['bindto']);
             }
 
-            if (isset($context['timeout']) && !is_null($context['timeout'])) {
+            if (isset($context['timeout'])) {
                 $socket->connectTimeout($address, $context['timeout']);
                 /* connectTimeout disable the blocking mode, turn it back */
                 $socket->setBlocking(true);
