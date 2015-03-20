@@ -62,6 +62,21 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    /** @group internet */
+    public function testCreateClientWithReasonableTimeoutShouldSuccess()
+    {
+        $socket = $this->factory->createClient('www.google.com:80', 5.0);
+
+        $this->assertInstanceOf('Socket\Raw\Socket', $socket);
+    }
+
+    /** @group internet */
+    public function testCreateClientWithSmallTimeoutToUnboundPortTimesOut()
+    {
+        $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ETIMEDOUT);
+        $this->factory->createClient('www.google.com:81', 0.001);
+    }
+
     /**
      * the target address should not be bound, so connecting via TCP should fail
      *

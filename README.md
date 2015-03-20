@@ -73,7 +73,8 @@ $factory = new \Socket\Raw\Factory();
 
 #### createClient()
 
-The `createClient($address)` method is the most convenient method for creating connected client sockets
+The `createClient(string $address, null|float $timeout): Socket` method is
+the most convenient method for creating connected client sockets
 (similar to how [`fsockopen()`](http://www.php.net/manual/en/function.fsockopen.php) or
 [`stream_socket_client()`](http://www.php.net/manual/en/function.stream-socket-client.php) work).
 
@@ -83,6 +84,9 @@ $socket = $factory->createClient('tcp://www.google.com:80');
 
 // same as above, as scheme defaults to TCP
 $socket = $factory->createClient('www.google.com:80');
+
+// same as above, but wait no longer than 2.5s for connection
+$socket = $factory->createClient('www.google.com:80', 2.5);
 
 // create connectionless UDP/IP datagram socket connected to google's DNS
 $socket = $factory->createClient('udp://8.8.8.8:53');

@@ -9,19 +9,27 @@ class Factory
     /**
      * create client socket connected to given target address
      *
-     * @param string $address target address to connect to
+     * @param string     $address target address to connect to
+     * @param null|float $timeout connection timeout (in seconds), default null = no limit
      * @return \Socket\Raw\Socket
      * @throws InvalidArgumentException if given address is invalid
      * @throws Exception on error
      * @uses self::createFromString()
      * @uses Socket::connect()
+     * @uses Socket::connectTimeout()
      */
-    public function createClient($address)
+    public function createClient($address, $timeout = null)
     {
         $socket = $this->createFromString($address, $scheme);
 
         try {
-            $socket->connect($address);
+            if ($timeout === null) {
+                $socket->connect($address);
+            } else {
+                // connectTimeout enables non-blocking mode, so turn blocking on again
+                $socket->connectTimeout($address, $timeout);
+                $socket->setBlocking(true);
+            }
         }
         catch (Exception $e) {
             $socket->close();
