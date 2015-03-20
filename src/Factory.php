@@ -10,18 +10,25 @@ class Factory
      * create client socket connected to given target address
      *
      * @param string $address target address to connect to
+     * @param float|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
      * @return \Socket\Raw\Socket
      * @throws InvalidArgumentException if given address is invalid
      * @throws Exception on error
      * @uses self::createFromString()
      * @uses Socket::connect()
      */
-    public function createClient($address)
+    public function createClient($address, $sec = null)
     {
         $socket = $this->createFromString($address, $scheme);
 
         try {
-            $socket->connect($address);
+            if (!is_null($sec)) {
+                $socket->connectTimeout($address, $sec);
+                /* connectTimeout disable the blocking mode, turn it back */
+                $socket->setBlocking(true);
+            } else {
+                $socket->connect($address);
+            }
         }
         catch (Exception $e) {
             $socket->close();
