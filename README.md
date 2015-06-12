@@ -60,29 +60,45 @@ The `createClient($address)` method is the most convenient method for creating c
 [`stream_socket_client()`](http://www.php.net/manual/en/function.stream-socket-client.php) work).
 
 ```php
+// establish a TCP/IP stream connection socket to www.google.com on port 80
 $socket = $factory->createClient('tcp://www.google.com:80');
-// tcp://www.google.com:80 => establish a TCP/IP stream connection socket to www.google.com on port 80
-// www.google.com:80       => same as above, as scheme defaults to TCP
-// udp://8.8.8.8:53        => create connectionless UDP/IP datagram socket connected to google's DNS
-// tcp://[::1]:1337        => establish TCP/IPv6 stream connection socket to localhost on port 1337
-// unix:///tmp/daemon.sock => connect to local unix stream socket path
-// udg:///tmp/udg.socket   => create unix datagram socket
-// icmp://192.168.0.1      => create a raw low-level ICMP socket (requires root!)
+
+// same as above, as scheme defaults to TCP
+$socket = $factory->createClient('www.google.com:80');
+
+// create connectionless UDP/IP datagram socket connected to google's DNS
+$socket = $factory->createClient('udp://8.8.8.8:53');
+
+// establish TCP/IPv6 stream connection socket to localhost on port 1337
+$socket = $factory->createClient('tcp://[::1]:1337');
+
+// connect to local Unix stream socket path
+$socket = $factory->createClient('unix:///tmp/daemon.sock');
+
+// create Unix datagram socket
+$socket = $factory->createClient('udg:///tmp/udg.socket');
+
+// create a raw low-level ICMP socket (requires root!)
+$socket = $factory->createClient('icmp://192.168.0.1');
 ```
 
 #### createServer()
 
-The `createSever($address)` method can be used to create a server side (listening) socket bound to specific address/path
+The `createServer($address)` method can be used to create a server side (listening) socket bound to specific address/path
 (similar to how [`stream_socket_server()`](http://www.php.net/manual/en/function.stream-socket-server.php) works).
+It accepts the same addressing scheme as the [`createClient()`](#createClient) method.
 
 ```php
+// create a TCP/IP stream connection socket server on port 1337
 $socket = $factory->createServer('tcp://localhost:1337');
-// uses the same addressing scheme as above
+
+// create a UDP/IPv6 datagram socket server on port 1337
+$socket = $factory->createServer('udp://[::1]:1337');
 ```
 
 #### create*()
 
-Less commonly used, it provides access to create (unconnected) sockets for various socket types:
+Less commonly used, the `Factory` provides access to creating (unconnected) sockets for various socket types:
 
 ```php
 $socket = $factory->createTcp4();
