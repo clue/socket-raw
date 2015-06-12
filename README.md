@@ -53,6 +53,8 @@ It provides simple access to creating TCP, UDP, UNIX, UDG and ICMP protocol sock
 $factory = new \Socket\Raw\Factory();
 ```
 
+#### createClient()
+
 The `createClient($address)` method is the most convenient method for creating connected client sockets
 (similar to how [`fsockopen()`](http://www.php.net/manual/en/function.fsockopen.php) or
 [`stream_socket_client()`](http://www.php.net/manual/en/function.stream-socket-client.php) work).
@@ -68,6 +70,8 @@ $socket = $factory->createClient('tcp://www.google.com:80');
 // icmp://192.168.0.1      => create a raw low-level ICMP socket (requires root!)
 ```
 
+#### createServer()
+
 The `createSever($address)` method can be used to create a server side (listening) socket bound to specific address/path
 (similar to how [`stream_socket_server()`](http://www.php.net/manual/en/function.stream-socket-server.php) works).
 
@@ -76,11 +80,73 @@ $socket = $factory->createServer('tcp://localhost:1337');
 // uses the same addressing scheme as above
 ```
 
-Less commonly used, it provides access to create (unconnected) sockets for various types (`Factory::createTcp4()`, `Factory::createUnix()`, etc.) as well as supporting arbitrary protocols through `Factory::create($family, $type, $protocol)`.
+#### create*()
+
+Less commonly used, it provides access to create (unconnected) sockets for various socket types:
+
+```php
+$socket = $factory->createTcp4();
+$socket = $factory->createTcp6();
+
+$socket = $factory->createUdp4();
+$socket = $factory->createUdp6();
+
+$socket = $factory->createUnix();
+$socket = $factory->createUdg();
+
+$socket = $factory->createIcmp4();
+$socket = $factory->createIcmp6();
+```
+
+You can also create arbitrary socket protocol types through the underlying mechanism:
+
+```php
+$factory->create($family, $type, $protocol);
+```
 
 ### Socket
 
-As discussed above, the `Socket` class is merely an object-oriented wrapper around a socket resource. As such, it helps if you're familar with socket programming in general. You can refer to PHP's fairly good [socket API documentation](http://www.php.net/manual/en/ref.sockets.php) or the docblock comments in the `Socket` class to get you started.
+As discussed above, the `Socket` class is merely an object-oriented wrapper around a socket resource. As such, it helps if you're familar with socket programming in general.
+
+The recommended way to create a `Socket` instance is via the above [`Factory`](#factory).
+
+#### Methods
+
+All low-level socket operations are available as methods on the `Socket` class.
+
+You can refer to PHP's fairly good [socket API documentation](http://www.php.net/manual/en/ref.sockets.php) or the docblock comments in the [`Socket` class](src/Socket.php) to get you started.
+
+##### Data I/O:
+
+```
+$socket->write('data');
+$data = $socket->read(8192);
+```
+
+##### Unconnected I/O:
+
+```
+$socket->sendTo('data', $flags, $remote);
+$data = $socket->rcvFrom(8192, $flags, $remote);
+```
+
+##### Non-blocking (async) I/O:
+
+```
+$socket->setBlocking(false);
+$socket->selectRead();
+$socket->selectWrite();
+```
+
+##### Connection handling:
+
+```php
+$client = $socket->accept();
+$socket->bind($address);
+$socket->connect($address);
+$socket->shutdown();
+$socket->close();
+```
 
 ## Install
 
