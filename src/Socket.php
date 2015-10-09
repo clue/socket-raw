@@ -255,14 +255,14 @@ class Socket
      *
      * @param int $length maximum length to read
      * @param int $flags
-     * @param int $ref reference will be filled with the length of data read from the socket
+     * @param int $ref (optional) reference will be filled with the length of data read from the socket
      * @return string
      * @throws Exception on error
      * @see self::read() if you do not need to pass $flags
      * @see self::recvFrom() if your socket is not connect()ed
      * @uses socket_recv()
      */
-    public function recv($length, $flags, &$ret)
+    public function recv($length, $flags, &$ret = null)
     {
         $ret = @socket_recv($this->resource, $buffer, $length, $flags);
         if ($ret === false) {
@@ -277,13 +277,13 @@ class Socket
      * @param int    $length maximum length to read
      * @param int    $flags
      * @param string $remote reference will be filled with remote/peer address/path
-     * @param int $ref reference will be filled with the length of data read from the socket
+     * @param int $ref (optional) reference will be filled with the length of data read from the socket
      * @return string
      * @throws Exception on error
      * @see self::recv() if your socket is connect()ed
      * @uses socket_recvfrom()
      */
-    public function recvFrom($length, $flags, &$remote, &$ret)
+    public function recvFrom($length, $flags, &$remote, &$ret = null)
     {
         $ret = @socket_recvfrom($this->resource, $buffer, $length, $flags, $address, $port);
         if ($ret === false) {
