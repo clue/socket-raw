@@ -20,6 +20,24 @@ This lightweight library exposes this socket API in a modern way by providing a 
 * **Good test coverage** -
   Comes with an automated test suite and is regularly tested in the *real world*
 
+**Table of contents**
+
+* [Quickstart example](#quickstart-example)
+* [Usage](#usage)
+  * [Factory](#factory)
+    * [createClient()](#createclient)
+    * [createServer()](#createserver)
+    * [create*()](#create)
+  * [Socket](#socket)
+    * [Methods](#methods)
+      * [Data I/O](#data-io)
+      * [Unconnected I/O](#unconnected-io)
+      * [Non-blocking (async) I/O](#non-blocking-async-io)
+      * [Connection handling](#connection-handling)
+* [Install](#install)
+* [Tests](#tests)
+* [License](#license)
+
 ## Quickstart example
 
 Once [installed](#install), you can use the following example to send and receive HTTP messages:
