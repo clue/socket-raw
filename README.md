@@ -184,15 +184,14 @@ $socket->close();
 
 ## Install
 
-The recommended way to install this library is [through composer](http://getcomposer.org). [New to composer?](http://getcomposer.org/doc/00-intro.md)
+The recommended way to install this library is [through Composer](http://getcomposer.org).
+[New to Composer?](http://getcomposer.org/doc/00-intro.md)
 
-```JSON
-{
-    "require": {
-        "clue/socket-raw": "~1.2"
-    }
-}
+```bash
+$ composer require clue/socket-raw:~1.2
 ```
+
+See also the [CHANGELOG](CHANGELOG.md) for details about version upgrades.
 
 ## Tests
 
