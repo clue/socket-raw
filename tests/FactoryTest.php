@@ -1,5 +1,6 @@
 <?php
 
+use Socket\Raw\Environment;
 use Socket\Raw\Factory;
 use Socket\Raw\Socket;
 
@@ -13,23 +14,28 @@ class FactoryTest extends PHPUnit_Framework_TestCase{
      */
     protected $factory;
 
+    /**
+     * @var Socket\Raw\Environment
+     * @type Environment
+     */
+    protected $environment;
+
     public function setUp()
     {
         $this->factory = new Factory();
+        $this->environment = new Environment();
     }
 
     public function testSupportsIpv6()
     {
-        // TODO: check this check
-        if (!defined('AF_INET6')) {
+        if (!$this->environment->supportsIPv6()) {
             $this->markTestSkipped('This system does not seem to support IPv6 sockets / addressing');
         }
     }
 
     public function testSupportsUnix()
     {
-        // TODO: check this check
-        if (!defined('AF_UNIX')) {
+        if (!$this->environment->supportsUnixSockets()) {
             $this->markTestSkipped('This system does not seem to support UNIX and UDG sockets');
         }
     }
