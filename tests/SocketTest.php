@@ -161,7 +161,7 @@ class SocketTest extends PHPUnit_Framework_TestCase{
     {
         $socket = $this->factory->createTcp4();
 
-        $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ETIMEDOUT);
+        $this->setExpectedException('Socket\Raw\Exception', '', SOCKET_ETIMEDOUT);
 
         $socket->connectTimeout('default.com:81', 0.001);
     }
@@ -170,7 +170,7 @@ class SocketTest extends PHPUnit_Framework_TestCase{
     {
         $socket = $this->factory->createTcp4();
 
-        $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ECONNREFUSED);
+        $this->setExpectedException('Socket\Raw\Exception', '', SOCKET_ECONNREFUSED);
 
         $socket->connectTimeout('localhost:2', 0.5);
     }
@@ -179,7 +179,7 @@ class SocketTest extends PHPUnit_Framework_TestCase{
     {
         $socket = $this->factory->createClient('google.com:80');
 
-        $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_EISCONN);
+        $this->setExpectedException('Socket\Raw\Exception', '', SOCKET_EISCONN);
 
         $socket->connectTimeout('google.com:8000', 10);
     }
