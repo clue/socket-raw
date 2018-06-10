@@ -1,8 +1,19 @@
-# CHANGELOG
+# Changelog
 
-This file is a manually maintained list of changes for each release. Feel free
-to add your changes here when sending pull requests. Also send corrections if
-you spot any mistakes.
+## 1.3.0 (2018-06-10)
+
+*   Feature: Add `$timeout` parameter for `Factory::createClient()`
+    (#39 by @Elbandi and @clue)
+
+    ```php
+    // connect to Google, but wait no longer than 2.5s for connection
+    $socket = $factory->createClient('www.google.com:80', 2.5);
+    ```
+
+*   Improve test suite by adding PHPUnit to require-dev,
+    update test suite to test against legacy PHP 5.3 through PHP 7.2 and
+    optionally skip functional integration tests requiring internet.
+    (#26 by @ascii-soup, #28, #29, #37 and #38 by @clue)
 
 ## 1.2.0 (2015-03-18)
 

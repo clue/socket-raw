@@ -14,7 +14,7 @@ This lightweight library exposes this socket API in a modern way by providing a 
   Uses a fluent interface so you can easily chain method calls.
   Error conditions will be signalled using `Exception`s instead of relying on cumbersome return codes.
 * **Lightweight, SOLID design** -
-  Provides a thin abstraction that is [*just good enough*](http://en.wikipedia.org/wiki/Principle_of_good_enough)
+  Provides a thin abstraction that is [*just good enough*](https://en.wikipedia.org/wiki/Principle_of_good_enough)
   and does not get in your way.
   This library is merely a very thin wrapper and has no other external dependencies.
 * **Good test coverage** -
@@ -108,7 +108,7 @@ $socket = $factory->createClient('icmp://192.168.0.1');
 
 The `createServer($address)` method can be used to create a server side (listening) socket bound to specific address/path
 (similar to how [`stream_socket_server()`](http://www.php.net/manual/en/function.stream-socket-server.php) works).
-It accepts the same addressing scheme as the [`createClient()`](#createClient) method.
+It accepts the same addressing scheme as the [`createClient()`](#createclient) method.
 
 ```php
 // create a TCP/IP stream connection socket server on port 1337
@@ -188,14 +188,19 @@ $socket->close();
 
 ## Install
 
-The recommended way to install this library is [through Composer](http://getcomposer.org).
-[New to Composer?](http://getcomposer.org/doc/00-intro.md)
+The recommended way to install this library is [through Composer](https://getcomposer.org).
+[New to Composer?](https://getcomposer.org/doc/00-intro.md)
 
 ```bash
-$ composer require clue/socket-raw:~1.2
+$ composer require clue/socket-raw:^1.3
 ```
 
 See also the [CHANGELOG](CHANGELOG.md) for details about version upgrades.
+
+This project aims to run on any platform and thus does not require any PHP
+extensions besides `ext-sockets` and supports running on legacy PHP 5.3 through
+current PHP 7+ and HHVM.
+It's *highly recommended to use PHP 7+* for this project.
 
 ## Tests
 
@@ -216,7 +221,7 @@ Note that the test suite contains tests for ICMP sockets which require root
 access on Unix/Linux systems. Therefor some tests will be skipped unless you run
 the following command to execute the full test suite:
 
-```php
+```bash
 $ sudo php vendor/bin/phpunit
 ```
 
@@ -230,4 +235,7 @@ $ php vendor/bin/phpunit --exclude-group internet
 
 ## License
 
-MIT
+This project is released under the permissive [MIT license](LICENSE).
+
+> Did you know that I offer custom development services and issuing invoices for
+  sponsorships of releases and for contributions? Contact me (@clue) for details.
