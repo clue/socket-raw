@@ -18,15 +18,24 @@ class FactoryTest extends PHPUnit_Framework_TestCase
 
     public function testSupportsIpv6()
     {
-        // TODO: check this check
-        if (!defined('AF_INET6')) {
+        static $available = null;
+        if ($available === null) {
+            $test = @stream_socket_client('udp://[::1]:0');
+            if ($test === false) {
+                $available = false;
+            } else {
+                fclose($test);
+                $available = true;
+            }
+        }
+
+        if (!$available) {
             $this->markTestSkipped('This system does not seem to support IPv6 sockets / addressing');
         }
     }
 
     public function testSupportsUnix()
     {
-        // TODO: check this check
         if (!defined('AF_UNIX')) {
             $this->markTestSkipped('This system does not seem to support UNIX and UDG sockets');
         }
