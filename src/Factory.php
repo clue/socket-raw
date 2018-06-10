@@ -10,18 +10,41 @@ class Factory
      * create client socket connected to given target address
      *
      * @param string $address target address to connect to
+     * @param array  $context (optional) "bindto" or "broadcast" or "timeout" context options
      * @return \Socket\Raw\Socket
      * @throws InvalidArgumentException if given address is invalid
      * @throws Exception on error
      * @uses self::createFromString()
+     * @uses Socket::setOption()
+     * @uses Socket::bind()
      * @uses Socket::connect()
+     * @uses Socket::connectTimeout()
+     * @uses Socket::setBlocking()
      */
-    public function createClient($address)
+    public function createClient($address, $context = array())
     {
         $socket = $this->createFromString($address, $scheme);
 
         try {
-            $socket->connect($address);
+            if (isset($context['broadcast']) && $context['broadcast']) {
+                $socket->setOption(SOL_SOCKET, SO_BROADCAST, 1);
+            }
+
+            if (isset($context['bindto'])) {
+                $socket->bind($context['bindto']);
+            }
+
+            if (isset($context['timeout'])) {
+                $socket->connectTimeout($address, $context['timeout']);
+                /* connectTimeout disable the blocking mode, turn it back */
+                $socket->setBlocking(true);
+            } else {
+                $socket->connect($address);
+            }
+
+            if (isset($context['blocking'])) {
+                $socket->setBlocking($context['blocking']);
+            }
         }
         catch (Exception $e) {
             $socket->close();
