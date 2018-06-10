@@ -3,10 +3,8 @@
 use Socket\Raw\Factory;
 use Socket\Raw\Socket;
 
-(include_once __DIR__.'/../vendor/autoload.php') OR die(PHP_EOL.'ERROR: composer autoloader not found, run "composer install" or see README for instructions'.PHP_EOL);
-
-class FactoryTest extends PHPUnit_Framework_TestCase{
-
+class FactoryTest extends PHPUnit_Framework_TestCase
+{
     /**
      * @var Socket\Raw\Factory
      * @type Factory
