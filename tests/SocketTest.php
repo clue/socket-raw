@@ -16,6 +16,7 @@ class SocketTest extends PHPUnit_Framework_TestCase
         $this->factory = new Factory();
     }
 
+    /** @group internet */
     public function testConnectGoogle()
     {
         $socket = $this->factory->createClient('www.google.com:80');
@@ -67,6 +68,7 @@ class SocketTest extends PHPUnit_Framework_TestCase
         }
     }
 
+    /** @group internet */
     public function testConnectAsyncGoogle()
     {
         $socket = $this->factory->createTcp4();
@@ -127,6 +129,7 @@ class SocketTest extends PHPUnit_Framework_TestCase
         $this->assertSame($socket, $socket->close());
     }
 
+    /** @group internet */
     public function testSelectFloat()
     {
         $socket = $this->factory->createClient('google.com:80');
@@ -139,6 +142,7 @@ class SocketTest extends PHPUnit_Framework_TestCase
         $this->assertLessThan(1.0, $time);
     }
 
+    /** @group internet */
     public function testConnectTimeoutGoogle()
     {
         $socket = $this->factory->createTcp4();
@@ -148,6 +152,7 @@ class SocketTest extends PHPUnit_Framework_TestCase
         $socket->close();
     }
 
+    /** @group internet */
     public function testConnectTimeoutUdpImmediately()
     {
         $socket = $this->factory->createUdp4();
@@ -155,6 +160,7 @@ class SocketTest extends PHPUnit_Framework_TestCase
         $socket->connectTimeout('google.com:8000', 10);
     }
 
+    /** @group internet */
     public function testConnectTimeoutFailTimeout()
     {
         $socket = $this->factory->createTcp4();
@@ -173,6 +179,7 @@ class SocketTest extends PHPUnit_Framework_TestCase
         $socket->connectTimeout('localhost:2', 0.5);
     }
 
+    /** @group internet */
     public function testConnectTimeoutFailAlreadyConnected()
     {
         $socket = $this->factory->createClient('google.com:80');
