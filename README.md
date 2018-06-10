@@ -195,15 +195,34 @@ See also the [CHANGELOG](CHANGELOG.md) for details about version upgrades.
 
 ## Tests
 
-To run the test suite, you need PHPUnit. Go to the project root and run:
+To run the test suite, you first need to clone this repo and then install all
+dependencies [through Composer](https://getcomposer.org):
 
-````bash
-$ phpunit tests
-````
+```bash
+$ composer install
+```
 
-> Note: The test suite contains tests for ICMP sockets which require root access
-on unix/linux systems. Therefor some tests will be skipped unless you run
-`sudo phpunit tests` to execute the full test suite.
+To run the test suite, go to the project root and run:
+
+```bash
+$ php vendor/bin/phpunit
+```
+
+Note that the test suite contains tests for ICMP sockets which require root
+access on Unix/Linux systems. Therefor some tests will be skipped unless you run
+the following command to execute the full test suite:
+
+```php
+$ sudo php vendor/bin/phpunit
+```
+
+The test suite also contains a number of functional integration tests that rely
+on a stable internet connection.
+If you do not want to run these, they can simply be skipped like this:
+
+```bash
+$ php vendor/bin/phpunit --exclude-group internet
+```
 
 ## License
 

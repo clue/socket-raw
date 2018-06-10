@@ -46,6 +46,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Socket\Raw\Factory', $this->factory);
     }
 
+    /** @group internet */
     public function testCreateClientTcp4()
     {
         $socket = $this->factory->createClient('tcp://www.google.com:80');
@@ -53,6 +54,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
+    /** @group internet */
     public function testCreateClientSchemelessTcp4()
     {
         $socket = $this->factory->createClient('www.google.com:80');
@@ -79,6 +81,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->fail('Expected to be unable to connect to localhost:2');
     }
 
+    /** @group internet */
     public function testCreateClientUdp4()
     {
         $socket = $this->factory->createClient('udp://8.8.8.8:53');
