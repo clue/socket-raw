@@ -141,10 +141,9 @@ class Socket
 
             // socket is already connected immediately?
             return $this;
-        }
-        catch (Exception $e) {
-            // non-blocking connect() should be EINPROGRESS => otherwise re-throw
-            if ($e->getCode() !== SOCKET_EINPROGRESS) {
+        } catch (Exception $e) {
+            // non-blocking connect() should be EINPROGRESS (or EWOULDBLOCK on Windows) => otherwise re-throw
+            if ($e->getCode() !== SOCKET_EINPROGRESS && $e->getCode() !== SOCKET_EWOULDBLOCK) {
                 throw $e;
             }
 
