@@ -1,9 +1,10 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Socket\Raw\Factory;
 use Socket\Raw\Socket;
 
-class FactoryTest extends PHPUnit_Framework_TestCase
+class FactoryTest extends TestCase
 {
     /**
      * @var Socket\Raw\Factory
@@ -16,6 +17,9 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->factory = new Factory();
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testSupportsIpv6()
     {
         static $available = null;
@@ -34,6 +38,9 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testSupportsUnix()
     {
         if (!defined('AF_UNIX')) {
@@ -81,6 +88,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
      * the target address should not be bound, so connecting via TCP should fail
      *
      * @see self::testCreateClientUdp4UnboundWorks()
+     * @doesNotPerformAssertions
      */
     public function testCreateClientTcp4UnboundFails()
     {
@@ -163,6 +171,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
 
     /**
      * @depends testSupportsUnix
+     * @doesNotPerformAssertions
      */
     public function testCreateServerUnixFailInvalidPath()
     {
@@ -319,7 +328,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
     }
 
     /**
-     * @dataProvider testCreateProvider
+     * @dataProvider provideCreateArguments
      */
     public function testCreate($domain, $type, $protocol)
     {
@@ -328,7 +337,7 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
     }
 
-    public static function testCreateProvider()
+    public static function provideCreateArguments()
     {
         // only return TCP/IP and UDP/IP as the above tests should already cover other sockets
         return array(
@@ -337,6 +346,9 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testCreateInvalid()
     {
         try {
@@ -360,6 +372,9 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->assertInstanceOf('Socket\Raw\Socket', $sockets[1]);
     }
 
+    /**
+     * @doesNotPerformAssertions
+     */
     public function testCreatePairInvalid()
     {
         try {
@@ -450,6 +465,8 @@ class FactoryTest extends PHPUnit_Framework_TestCase
 
     /**
      * creating socket for invalid scheme should fail
+     *
+     * @doesNotPerformAssertions
      */
     public function testCreateFromStringInvalid()
     {
@@ -463,4 +480,16 @@ class FactoryTest extends PHPUnit_Framework_TestCase
         $this->fail('Creating socket for invalid scheme should fail');
     }
 
+    public function setExpectedException($exception, $message = '', $code = 0)
+    {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException($exception);
+            if ($message !== null) {
+                $this->expectExceptionMessage($message);
+            }
+            $this->expectExceptionCode($code);
+        } else {
+            parent::setExpectedException($exception, $message, $code);
+        }
+    }
 }

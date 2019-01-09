@@ -1,9 +1,10 @@
 <?php
 
+use PHPUnit\Framework\TestCase;
 use Socket\Raw\Socket;
 use Socket\Raw\Factory;
 
-class SocketTest extends PHPUnit_Framework_TestCase
+class SocketTest extends TestCase
 {
     /**
      * @var Socket\Raw\Factory
@@ -152,7 +153,10 @@ class SocketTest extends PHPUnit_Framework_TestCase
         $socket->close();
     }
 
-    /** @group internet */
+    /**
+     * @group internet
+     * @doesNotPerformAssertions
+     */
     public function testConnectTimeoutUdpImmediately()
     {
         $socket = $this->factory->createUdp4();
@@ -238,5 +242,18 @@ class SocketTest extends PHPUnit_Framework_TestCase
         $this->assertTrue($peer->selectRead(1.0));
 
         $peer->close();
+    }
+
+    public function setExpectedException($exception, $message = '', $code = 0)
+    {
+        if (method_exists($this, 'expectException')) {
+            $this->expectException($exception);
+            if ($message !== null) {
+                $this->expectExceptionMessage($message);
+            }
+            $this->expectExceptionCode($code);
+        } else {
+            parent::setExpectedException($exception, $message, $code);
+        }
     }
 }
