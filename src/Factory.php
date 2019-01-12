@@ -30,8 +30,7 @@ class Factory
                 $socket->connectTimeout($address, $timeout);
                 $socket->setBlocking(true);
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $socket->close();
             throw $e;
         }
@@ -59,8 +58,7 @@ class Factory
             if ($socket->getType() === SOCK_STREAM) {
                 $socket->listen();
             }
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $socket->close();
             throw $e;
         }

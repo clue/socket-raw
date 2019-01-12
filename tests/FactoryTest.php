@@ -94,8 +94,7 @@ class FactoryTest extends TestCase
     {
         try {
             $this->factory->createClient('tcp://localhost:2');
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             if ($e->getCode() === SOCKET_ECONNREFUSED) {
                 return;
             }
@@ -160,13 +159,18 @@ class FactoryTest extends TestCase
      */
     public function testCreateServerUnix()
     {
-        $path = '/tmp/randomfactorytests.sock';
+        if (DIRECTORY_SEPARATOR !== '\\') {
+            $path = sys_get_temp_dir() . DIRECTORY_SEPARATOR . 'test-' . md5(microtime(true)) . '.sock';
+        } else {
+            // create test socket in local directory on Windows
+            $path = 'test-' . md5(microtime(true)) . '.sock';
+        }
 
         $socket = $this->factory->createServer('unix://' . $path);
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
 
-        unlink($path);
+        $this->assertTrue(unlink($path), 'Unable to remove temporary socket ' . $path);
     }
 
     /**
@@ -179,8 +183,7 @@ class FactoryTest extends TestCase
 
         try {
             $this->factory->createServer('unix://' . $path);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return;
         }
 
@@ -192,7 +195,10 @@ class FactoryTest extends TestCase
      */
     public function testCreateServerUdg()
     {
-        // skip if not unix
+        if (DIRECTORY_SEPARATOR === '\\') {
+            // https://blogs.msdn.microsoft.com/commandline/2017/12/19/af_unix-comes-to-windows/
+            $this->markTestSkipped('Unix datagram sockets not supported on Windows');
+        }
 
         $path = '/tmp/randomfactorytests.sock';
 
@@ -207,8 +213,7 @@ class FactoryTest extends TestCase
     {
         try {
             $socket = $this->factory->createServer('icmp://0.0.0.0');
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             if ($e->getCode() === SOCKET_EPERM) {
                 // skip if not root
                 return $this->markTestSkipped('No access to ICMPv4 socket (only root can do so)');
@@ -226,8 +231,7 @@ class FactoryTest extends TestCase
     {
         try {
             $socket = $this->factory->createServer('icmp6://[::1]');
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             if ($e->getCode() === SOCKET_EPERM) {
                 // skip if not root
                 return $this->markTestSkipped('No access to ICMPv6 socket (only root can do so)');
@@ -287,6 +291,11 @@ class FactoryTest extends TestCase
      */
     public function testCreateUdg()
     {
+        if (DIRECTORY_SEPARATOR === '\\') {
+            // https://blogs.msdn.microsoft.com/commandline/2017/12/19/af_unix-comes-to-windows/
+            $this->markTestSkipped('Unix datagram sockets not supported on Windows');
+        }
+
         $socket = $this->factory->createUdg();
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
@@ -296,8 +305,7 @@ class FactoryTest extends TestCase
     {
         try {
             $socket = $this->factory->createIcmp4();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             if ($e->getCode() === SOCKET_EPERM) {
                 // skip if not root
                 return $this->markTestSkipped('No access to ICMPv4 socket (only root can do so)');
@@ -315,8 +323,7 @@ class FactoryTest extends TestCase
     {
         try {
             $socket = $this->factory->createIcmp6();
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             if ($e->getCode() === SOCKET_EPERM) {
                 // skip if not root
                 return $this->markTestSkipped('No access to ICMPv6 socket (only root can do so)');
@@ -353,8 +360,7 @@ class FactoryTest extends TestCase
     {
         try {
             $this->factory->create(0, 1, 2);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return;
         }
         $this->fail();
@@ -365,6 +371,10 @@ class FactoryTest extends TestCase
      */
     public function testCreatePair()
     {
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $this->markTestSkipped('Unix socket pair not supported on Windows');
+        }
+
         $sockets = $this->factory->createPair(AF_UNIX, SOCK_STREAM, 0);
 
         $this->assertCount(2, $sockets);
@@ -379,8 +389,7 @@ class FactoryTest extends TestCase
     {
         try {
             $this->factory->createPair(0, 1, 2);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return;
         }
         $this->fail();
@@ -473,8 +482,7 @@ class FactoryTest extends TestCase
         $address = 'invalid://whatever';
         try {
             $this->factory->createFromString($address, $scheme);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return;
         }
         $this->fail('Creating socket for invalid scheme should fail');

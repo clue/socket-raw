@@ -63,8 +63,7 @@ class SocketTest extends TestCase
         try {
             $this->factory->createClient('localhost:2');
             $this->fail('Expected connection to fail');
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             $this->assertEquals(SOCKET_ECONNREFUSED, $e->getCode());
         }
     }
@@ -83,10 +82,12 @@ class SocketTest extends TestCase
         try {
             $this->assertSame($socket, $socket->connect('www.google.com:80'));
             $this->fail('Calling connect() succeeded immediately');
-        }
-        catch (Exception $e) {
-            // non-blocking connect() should be EINPROGRESS
-            $this->assertEquals(SOCKET_EINPROGRESS, $e->getCode());
+        } catch (Exception $e) {
+            // non-blocking connect() should be EINPROGRESS or EWOULDBLOCK on Windows
+            $this->assertEquals(
+                DIRECTORY_SEPARATOR !== '\\' ? SOCKET_EINPROGRESS : SOCKET_EWOULDBLOCK,
+                $e->getCode()
+            );
 
             // connection should be established within 5.0 seconds
             $this->assertTrue($socket->selectWrite(5.0));
@@ -100,6 +101,10 @@ class SocketTest extends TestCase
 
     public function testConnectAsyncFailUnbound()
     {
+        if (PHP_OS !== 'Linux') {
+            $this->markTestSkipped('Only Linux is known to refuse connections to unbound addresses');
+        }
+
         $socket = $this->factory->createTcp4();
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
@@ -109,8 +114,7 @@ class SocketTest extends TestCase
         try {
             $this->assertSame($socket, $socket->connect('localhost:2'));
             $this->fail('Calling connect() succeeded immediately');
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             // non-blocking connect() should be EINPROGRESS
             $this->assertEquals(SOCKET_EINPROGRESS, $e->getCode());
 
@@ -139,7 +143,8 @@ class SocketTest extends TestCase
         $this->assertFalse($socket->selectRead(0.5));
         $time = microtime(true) - $time;
 
-        $this->assertGreaterThan(0.5, $time);
+        // check timer interval, but add some grace time to cope with inaccurate timers
+        $this->assertGreaterThan(0.48, $time);
         $this->assertLessThan(1.0, $time);
     }
 
@@ -176,6 +181,10 @@ class SocketTest extends TestCase
 
     public function testConnectTimeoutFailUnbound()
     {
+        if (PHP_OS !== 'Linux') {
+            $this->markTestSkipped('Only Linux is known to refuse connections to unbound addresses');
+        }
+
         $socket = $this->factory->createTcp4();
 
         $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ECONNREFUSED);
@@ -225,7 +234,9 @@ class SocketTest extends TestCase
         // create local client connected to the given server
         $client = $this->factory->createClient($server->getSockName());
 
-        // client connected, so we can not accept() this socket
+        // client connected, so we should be able to accept() this socket immediately
+        // on Windows, there appears to be a race condition, so first wait for server to be ready
+        $server->selectRead(0.1);
         $peer = $server->accept();
 
         // peer should be writable right away
