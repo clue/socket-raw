@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.0 (2019-01-22)
+
+*   Feature: Improve Windows support (async connections and Unix domain sockets).
+    (#43 by @clue)
+
+*   Improve test suite by adding forward compatibility with PHPUnit 7 and PHPUnit 6.
+    (#42 by @clue)
+
 ## 1.3.0 (2018-06-10)
 
 *   Feature: Add `$timeout` parameter for `Factory::createClient()`
