@@ -267,4 +267,25 @@ class SocketTest extends TestCase
             parent::setExpectedException($exception, $message, $code);
         }
     }
+
+    /**
+     * @depends testServerNonBlocking
+     */
+    public function testAssertAliveAfterClose(Socket $server)
+    {
+        $errorHandlerCalled = false;
+        try {
+            set_error_handler(function() use (&$errorHandlerCalled) {
+                $errorHandlerCalled = func_get_args();
+            });
+            $server->close();
+            $server->assertAlive();
+        } catch (Exception $e) {
+            $this->assertFalse($errorHandlerCalled, 'we do not want to trigger any warnings etc.');
+            $this->assertSame(0, $e->getCode());
+            $this->assertSame('Socket error: not a valid resource', $e->getMessage());
+        } finally {
+            restore_error_handler();
+        }
+    }
 }

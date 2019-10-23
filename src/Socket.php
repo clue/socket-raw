@@ -474,7 +474,11 @@ class Socket
      */
     public function assertAlive()
     {
-        $code = $this->getOption(SOL_SOCKET, SO_ERROR);
+        if (is_resource($this->resource)) {
+            $code = $this->getOption(SOL_SOCKET, SO_ERROR);
+        } else {
+            $code = false;
+        }
         if ($code !== 0) {
             throw Exception::createFromCode($code, 'Socket error');
         }

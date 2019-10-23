@@ -65,6 +65,10 @@ class Exception extends RuntimeException
      */
     protected static function getErrorMessage($code)
     {
+        if (null === $code || false === $code) {
+            return 'not a valid resource';
+        }
+        
         $string = socket_strerror($code);
 
         // search constant starting with SOCKET_ for this error code
