@@ -255,6 +255,24 @@ class SocketTest extends TestCase
         $peer->close();
     }
 
+    public function testBindThrowsWhenSocketIsAlreadyClosed()
+    {
+        $socket = $this->factory->createTcp4();
+        $socket->close();
+
+        $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ENOTSOCK);
+        $socket->bind('127.0.0.1:0');
+    }
+
+    public function testAssertAliveThrowsWhenSocketIsAlreadyClosed()
+    {
+        $socket = $this->factory->createTcp4();
+        $socket->close();
+
+        $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ENOTSOCK);
+        $socket->assertAlive();
+    }
+
     public function setExpectedException($exception, $message = '', $code = 0)
     {
         if (method_exists($this, 'expectException')) {
