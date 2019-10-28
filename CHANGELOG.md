@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.4.1 (2019-10-28)
+
+*   Fix: Fix error reporting when invoking methods on closed socket instance.
+    (#48 by @clue)
+
+*   Improve test suite to run tests on Windows via Travis CI.
+    (#49 by @clue)
+
 ## 1.4.0 (2019-01-22)
 
 *   Feature: Improve Windows support (async connections and Unix domain sockets).

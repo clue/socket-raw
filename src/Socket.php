@@ -3,10 +3,10 @@
 namespace Socket\Raw;
 
 /**
- * simple and lightweight OOP wrapper for the low level sockets extension (ext-sockets)
+ * Simple and lightweight OOP wrapper for the low-level sockets extension (ext-sockets)
  *
  * @author clue
- * @link https://github.com/clue/socket-raw
+ * @link https://github.com/clue/php-socket-raw
  */
 class Socket
 {

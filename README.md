@@ -1,14 +1,14 @@
 # clue/socket-raw [![Build Status](https://travis-ci.org/clue/php-socket-raw.svg?branch=master)](https://travis-ci.org/clue/php-socket-raw)
 
-Simple and lightweight OOP wrapper for PHP's low level sockets extension (ext-sockets)
+Simple and lightweight OOP wrapper for PHP's low-level sockets extension (ext-sockets)
 
-PHP offers two networking APIs, the newer [streams API](http://php.net/manual/en/book.stream.php) and the older [socket API](http://www.php.net/manual/en/ref.sockets.php).
+PHP offers two networking APIs, the newer [streams API](https://www.php.net/manual/en/book.stream.php) and the older [socket API](https://www.php.net/manual/en/ref.sockets.php).
 While the former has been a huge step forward in generalizing various streaming resources,
-it lacks some of the advanced features of the original and much more low level socket API.
+it lacks some of the advanced features of the original and much more low-level socket API.
 This lightweight library exposes this socket API in a modern way by providing a thin wrapper around the underlying API.
 
 * **Full socket API** -
-  It exposes the whole [socket API](http://www.php.net/manual/en/ref.sockets.php) through a *sane* object-oriented interface.
+  It exposes the whole [socket API](https://www.php.net/manual/en/ref.sockets.php) through a *sane* object-oriented interface.
   Provides convenience methods for common operations as well as exposing all underlying methods and options.
 * **Fluent interface** -
   Uses a fluent interface so you can easily chain method calls.
@@ -18,7 +18,7 @@ This lightweight library exposes this socket API in a modern way by providing a 
   and does not get in your way.
   This library is merely a very thin wrapper and has no other external dependencies.
 * **Good test coverage** -
-  Comes with an automated test suite and is regularly tested in the *real world*
+  Comes with an automated test suite and is regularly tested in the *real world*.
 
 **Table of contents**
 
@@ -64,7 +64,7 @@ See also the [examples](examples).
 ### Factory
 
 As shown in the [quickstart example](#quickstart-example), this library uses a `Factory` pattern
-as a simple API to [`socket_create()`](http://www.php.net/manual/en/function.socket-create.php).
+as a simple API to [`socket_create()`](https://www.php.net/manual/en/function.socket-create.php).
 It provides simple access to creating TCP, UDP, UNIX, UDG and ICMP protocol sockets and supports both IPv4 and IPv6 addressing.
 
 ```php
@@ -75,8 +75,8 @@ $factory = new \Socket\Raw\Factory();
 
 The `createClient(string $address, null|float $timeout): Socket` method is
 the most convenient method for creating connected client sockets
-(similar to how [`fsockopen()`](http://www.php.net/manual/en/function.fsockopen.php) or
-[`stream_socket_client()`](http://www.php.net/manual/en/function.stream-socket-client.php) work).
+(similar to how [`fsockopen()`](https://www.php.net/manual/en/function.fsockopen.php) or
+[`stream_socket_client()`](https://www.php.net/manual/en/function.stream-socket-client.php) work).
 
 ```php
 // establish a TCP/IP stream connection socket to www.google.com on port 80
@@ -107,7 +107,7 @@ $socket = $factory->createClient('icmp://192.168.0.1');
 #### createServer()
 
 The `createServer($address)` method can be used to create a server side (listening) socket bound to specific address/path
-(similar to how [`stream_socket_server()`](http://www.php.net/manual/en/function.stream-socket-server.php) works).
+(similar to how [`stream_socket_server()`](https://www.php.net/manual/en/function.stream-socket-server.php) works).
 It accepts the same addressing scheme as the [`createClient()`](#createclient) method.
 
 ```php
@@ -152,7 +152,7 @@ The recommended way to create a `Socket` instance is via the above [`Factory`](#
 
 All low-level socket operations are available as methods on the `Socket` class.
 
-You can refer to PHP's fairly good [socket API documentation](http://www.php.net/manual/en/ref.sockets.php) or the docblock comments in the [`Socket` class](src/Socket.php) to get you started.
+You can refer to PHP's fairly good [socket API documentation](https://www.php.net/manual/en/ref.sockets.php) or the docblock comments in the [`Socket` class](src/Socket.php) to get you started.
 
 ##### Data I/O:
 
@@ -195,7 +195,7 @@ This project follows [SemVer](https://semver.org/).
 This will install the latest supported version:
 
 ```bash
-$ composer require clue/socket-raw:^1.4
+$ composer require clue/socket-raw:^1.4.1
 ```
 
 See also the [CHANGELOG](CHANGELOG.md) for details about version upgrades.
