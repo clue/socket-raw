@@ -1,15 +1,5 @@
 language: php
 
-php:
-# - 5.3 # requires old distro, see below
-  - 5.4
-  - 5.5
-  - 5.6
-  - 7.0
-  - 7.1
-  - 7.2
-# - hhvm # requires legacy phpunit & ignore errors, see below
-
 # lock distro so new future defaults will not break the build
 dist: trusty
 
@@ -17,7 +7,15 @@ matrix:
   include:
     - php: 5.3
       dist: precise
-    - php: hhvm
+    - php: 5.4
+    - php: 5.5
+    - php: 5.6
+    - php: 7.0
+    - php: 7.1
+    - php: 7.2
+    - php: 7.3
+    - php: 7.4
+    - php: hhvm-3.18
       install: composer require phpunit/phpunit:^5 --dev --no-interaction
     - name: "Windows"
       os: windows
@@ -29,7 +27,7 @@ matrix:
         - php -r "file_put_contents(php_ini_loaded_file(),'extension_dir=ext'.PHP_EOL,FILE_APPEND);"
         - php -r "file_put_contents(php_ini_loaded_file(),'extension=sockets'.PHP_EOL,FILE_APPEND);"
   allow_failures:
-    - php: hhvm
+    - php: hhvm-3.18
     - os: windows
 
 sudo: false
