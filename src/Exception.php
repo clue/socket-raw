@@ -18,11 +18,12 @@ class Exception extends RuntimeException
      */
     public static function createFromSocketResource($resource, $messagePrefix = 'Socket operation failed')
     {
-        $code = @socket_last_error($resource);
-        if ($code === false) {
-            $code = SOCKET_ENOTSOCK;
-        } else {
+        if (is_resource($resource)) {
+            $code = socket_last_error($resource);
             socket_clear_error($resource);
+        } else {
+            // socket already closed, return fixed error code instead of operating on invalid handle
+            $code = SOCKET_ENOTSOCK;
         }
 
         return self::createFromCode($code, $messagePrefix);
