@@ -12,7 +12,10 @@ class FactoryTest extends TestCase
      */
     protected $factory;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    public function setUpFactory()
     {
         $this->factory = new Factory();
     }
@@ -409,13 +412,13 @@ class FactoryTest extends TestCase
      *
      * @param Socket $socket
      * @depends testCreateListenRandom
-     * @expectedException Exception
      */
     public function testCreateListenInUseFails(Socket $socket)
     {
         $address = $socket->getSockName();
         $port = substr($address, strrpos($address, ':') + 1);
 
+        $this->setExpectedException('Exception');
         $this->factory->createListen($port);
     }
 
@@ -488,15 +491,19 @@ class FactoryTest extends TestCase
         $this->fail('Creating socket for invalid scheme should fail');
     }
 
-    public function setExpectedException($exception, $message = '', $code = 0)
+    public function setExpectedException($exception, $message = null, $code = null)
     {
         if (method_exists($this, 'expectException')) {
+            // PHPUnit 5.2+
             $this->expectException($exception);
             if ($message !== null) {
                 $this->expectExceptionMessage($message);
             }
-            $this->expectExceptionCode($code);
+            if ($code !== null) {
+                $this->expectExceptionCode($code);
+            }
         } else {
+            // legacy PHPUnit 4 - PHPUnit 5.1
             parent::setExpectedException($exception, $message, $code);
         }
     }
