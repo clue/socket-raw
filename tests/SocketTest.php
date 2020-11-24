@@ -12,7 +12,10 @@ class SocketTest extends TestCase
      */
     protected $factory;
 
-    public function setUp()
+    /**
+     * @before
+     */
+    public function setUpFactory()
     {
         $this->factory = new Factory();
     }
