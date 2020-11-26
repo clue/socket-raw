@@ -224,8 +224,7 @@ class SocketTest extends TestCase
             $server->accept();
             $this->fail('accept() MUST throw an exception');
         } catch (Exception $e) {
-            // code should usually be SOCKET_EAGAIN, hhvm uses SOCKET_EBADF, so let's play it safe
-            $this->assertNotEquals(0, $e->getCode());
+            $this->assertEquals(SOCKET_EWOULDBLOCK, $e->getCode());
         }
     }
 
