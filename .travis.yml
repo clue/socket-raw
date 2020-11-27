@@ -15,8 +15,6 @@ jobs:
     - php: 7.2
     - php: 7.3
     - php: 7.4
-    - php: hhvm-3.18
-      install: composer require phpunit/phpunit:^5 --dev
     - name: "Windows"
       os: windows
       language: shell # no built-in php support
@@ -27,7 +25,6 @@ jobs:
         - php -r "file_put_contents(php_ini_loaded_file(),'extension_dir=ext'.PHP_EOL,FILE_APPEND);"
         - php -r "file_put_contents(php_ini_loaded_file(),'extension=sockets'.PHP_EOL,FILE_APPEND);"
   allow_failures:
-    - php: hhvm-3.18
     - os: windows
 
 install:
