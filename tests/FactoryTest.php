@@ -219,7 +219,7 @@ class FactoryTest extends TestCase
         } catch (Exception $e) {
             if ($e->getCode() === SOCKET_EPERM) {
                 // skip if not root
-                return $this->markTestSkipped('No access to ICMPv4 socket (only root can do so)');
+                $this->markTestSkipped('No access to ICMPv4 socket (only root can do so)');
             }
             throw $e;
         }
@@ -237,7 +237,7 @@ class FactoryTest extends TestCase
         } catch (Exception $e) {
             if ($e->getCode() === SOCKET_EPERM) {
                 // skip if not root
-                return $this->markTestSkipped('No access to ICMPv6 socket (only root can do so)');
+                $this->markTestSkipped('No access to ICMPv6 socket (only root can do so)');
             }
             throw $e;
         }
@@ -311,7 +311,7 @@ class FactoryTest extends TestCase
         } catch (Exception $e) {
             if ($e->getCode() === SOCKET_EPERM) {
                 // skip if not root
-                return $this->markTestSkipped('No access to ICMPv4 socket (only root can do so)');
+                $this->markTestSkipped('No access to ICMPv4 socket (only root can do so)');
             }
             throw $e;
         }
@@ -329,7 +329,7 @@ class FactoryTest extends TestCase
         } catch (Exception $e) {
             if ($e->getCode() === SOCKET_EPERM) {
                 // skip if not root
-                return $this->markTestSkipped('No access to ICMPv6 socket (only root can do so)');
+                $this->markTestSkipped('No access to ICMPv6 socket (only root can do so)');
             }
             throw $e;
         }
@@ -365,6 +365,10 @@ class FactoryTest extends TestCase
             $this->factory->create(0, 1, 2);
         } catch (Exception $e) {
             return;
+        } catch (Error $e) {
+            if (PHP_VERSION_ID >= 80000) {
+                return;
+            }
         }
         $this->fail();
     }
@@ -394,6 +398,10 @@ class FactoryTest extends TestCase
             $this->factory->createPair(0, 1, 2);
         } catch (Exception $e) {
             return;
+        } catch (Error $e) {
+            if (PHP_VERSION_ID >= 80000) {
+                return;
+            }
         }
         $this->fail();
     }

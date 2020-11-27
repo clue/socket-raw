@@ -26,7 +26,12 @@ class SocketTest extends TestCase
         $socket = $this->factory->createClient('www.google.com:80');
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
-        $this->assertEquals('resource', gettype($socket->getResource()));
+
+        if (PHP_VERSION_ID >= 80000) {
+            $this->assertInstanceOf('Socket', $socket->getResource());
+        } else {
+            $this->assertEquals('resource', gettype($socket->getResource()));
+        }
 
         // connecting from local address:
         $address = $socket->getSockName();
@@ -220,6 +225,10 @@ class SocketTest extends TestCase
      */
     public function testServerNonBlockingAcceptNobody(Socket $server)
     {
+        if (PHP_VERSION_ID >= 80000) {
+            $this->markTestIncomplete('Causes SEGFAULTs on PHP 8');
+        }
+
         try {
             $server->accept();
             $this->fail('accept() MUST throw an exception');
@@ -262,7 +271,11 @@ class SocketTest extends TestCase
         $socket = $this->factory->createTcp4();
         $socket->close();
 
-        $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ENOTSOCK);
+        if (PHP_VERSION_ID >= 80000) {
+            $this->setExpectedException('Error', 'has already been closed');
+        } else {
+            $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ENOTSOCK);
+        }
         $socket->bind('127.0.0.1:0');
     }
 
@@ -271,7 +284,11 @@ class SocketTest extends TestCase
         $socket = $this->factory->createTcp4();
         $socket->close();
 
-        $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ENOTSOCK);
+        if (PHP_VERSION_ID >= 80000) {
+            $this->setExpectedException('Error', 'has already been closed');
+        } else {
+            $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ENOTSOCK);
+        }
         $socket->assertAlive();
     }
 
