@@ -2,7 +2,7 @@
 
 [![CI status](https://github.com/clue/php-socket-raw/workflows/CI/badge.svg)](https://github.com/clue/php-socket-raw/actions)
 
-Simple and lightweight OOP wrapper for PHP's low-level sockets extension (ext-sockets)
+Simple and lightweight OOP wrapper for PHP's low-level sockets extension (ext-sockets).
 
 PHP offers two networking APIs, the newer [streams API](https://www.php.net/manual/en/book.stream.php) and the older [socket API](https://www.php.net/manual/en/ref.sockets.php).
 While the former has been a huge step forward in generalizing various streaming resources,
@@ -24,6 +24,7 @@ This lightweight library exposes this socket API in a modern way by providing a 
 
 **Table of contents**
 
+* [Support us](#support-us)
 * [Quickstart example](#quickstart-example)
 * [Usage](#usage)
   * [Factory](#factory)
@@ -39,6 +40,16 @@ This lightweight library exposes this socket API in a modern way by providing a 
 * [Install](#install)
 * [Tests](#tests)
 * [License](#license)
+
+## Support us
+
+We invest a lot of time developing, maintaining and updating our awesome
+open-source projects. You can help us sustain this high-quality of our work by
+[becoming a sponsor on GitHub](https://github.com/sponsors/clue). Sponsors get
+numerous benefits in return, see our [sponsoring page](https://github.com/sponsors/clue)
+for details.
+
+Let's take these projects to the next level together! 🚀
 
 ## Quickstart example
 
@@ -197,7 +208,7 @@ This project follows [SemVer](https://semver.org/).
 This will install the latest supported version:
 
 ```bash
-$ composer require clue/socket-raw:^1.4.1
+$ composer require clue/socket-raw:^1.5
 ```
 
 See also the [CHANGELOG](CHANGELOG.md) for details about version upgrades.
