@@ -305,7 +305,7 @@ class Socket
     /**
      * check socket to see if a read/recv/revFrom will not block
      *
-     * @param float|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
+     * @param float|null $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
      * @return boolean true = socket ready (read will not block), false = timeout expired, socket is not ready
      * @throws Exception on error
      * @throws \Error PHP 8 only: throws \Error when socket or arguments are invalid
@@ -313,9 +313,10 @@ class Socket
      */
     public function selectRead($sec = 0)
     {
-        $usec = $sec === null ? null : (($sec - floor($sec)) * 1000000);
+        $usec = $sec === null ? null : (int) (($sec - floor($sec)) * 1000000);
         $r = array($this->resource);
-        $ret = @socket_select($r, $x, $x, $sec, $usec);
+        $n = null;
+        $ret = @socket_select($r, $n, $n, $sec === null ? null : (int) $sec, $usec);
         if ($ret === false) {
             throw Exception::createFromGlobalSocketOperation('Failed to select socket for reading');
         }
@@ -325,7 +326,7 @@ class Socket
     /**
      * check socket to see if a write/send/sendTo will not block
      *
-     * @param float|NULL $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
+     * @param float|null $sec maximum time to wait (in seconds), 0 = immediate polling, null = no limit
      * @return boolean true = socket ready (write will not block), false = timeout expired, socket is not ready
      * @throws Exception on error
      * @throws \Error PHP 8 only: throws \Error when socket or arguments are invalid
@@ -333,9 +334,10 @@ class Socket
      */
     public function selectWrite($sec = 0)
     {
-        $usec = $sec === null ? null : (($sec - floor($sec)) * 1000000);
+        $usec = $sec === null ? null : (int) (($sec - floor($sec)) * 1000000);
         $w = array($this->resource);
-        $ret = @socket_select($x, $w, $x, $sec, $usec);
+        $n = null;
+        $ret = @socket_select($n, $w, $n, $sec === null ? null : (int) $sec, $usec);
         if ($ret === false) {
             throw Exception::createFromGlobalSocketOperation('Failed to select socket for writing');
         }
