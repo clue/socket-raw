@@ -226,7 +226,7 @@ class Factory
      * create socket for given address
      *
      * @param string $address (passed by reference in order to remove scheme, if present)
-     * @param string $scheme  default scheme to use, defaults to TCP (passed by reference in order to update with actual scheme used)
+     * @param string|null $scheme  default scheme to use, defaults to TCP (passed by reference in order to update with actual scheme used)
      * @return \Socket\Raw\Socket
      * @throws InvalidArgumentException if given address is invalid
      * @throws Exception in case creating socket failed
