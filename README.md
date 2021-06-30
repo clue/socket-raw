@@ -1,6 +1,7 @@
 # clue/socket-raw
 
 [![CI status](https://github.com/clue/socket-raw/workflows/CI/badge.svg)](https://github.com/clue/socket-raw/actions)
+[![installs on Packagist](https://img.shields.io/packagist/dt/clue/socket-raw?color=blue&label=installs%20on%20Packagist)](https://packagist.org/packages/clue/socket-raw)
 
 Simple and lightweight OOP wrapper for PHP's low-level sockets extension (ext-sockets).
 
