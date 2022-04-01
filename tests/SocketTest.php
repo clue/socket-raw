@@ -83,8 +83,6 @@ class SocketTest extends TestCase
 
         $this->assertInstanceOf('Socket\Raw\Socket', $socket);
 
-        $this->assertSame($socket, $socket->bind('0:0'));
-
         $this->assertSame($socket, $socket->setBlocking(false));
 
         try {
@@ -225,10 +223,6 @@ class SocketTest extends TestCase
      */
     public function testServerNonBlockingAcceptNobody(Socket $server)
     {
-        if (PHP_VERSION_ID >= 80000) {
-            $this->markTestIncomplete('Causes SEGFAULTs on PHP 8');
-        }
-
         try {
             $server->accept();
             $this->fail('accept() MUST throw an exception');
