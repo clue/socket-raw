@@ -313,7 +313,7 @@ class Socket
      */
     public function selectRead($sec = 0)
     {
-        $usec = $sec === null ? null : (int) (($sec - floor($sec)) * 1000000);
+        $usec = $sec === null ? 0 : (int) (($sec - floor($sec)) * 1000000);
         $r = array($this->resource);
         $n = null;
         $ret = @socket_select($r, $n, $n, $sec === null ? null : (int) $sec, $usec);
@@ -334,7 +334,7 @@ class Socket
      */
     public function selectWrite($sec = 0)
     {
-        $usec = $sec === null ? null : (int) (($sec - floor($sec)) * 1000000);
+        $usec = $sec === null ? 0 : (int) (($sec - floor($sec)) * 1000000);
         $w = array($this->resource);
         $n = null;
         $ret = @socket_select($n, $w, $n, $sec === null ? null : (int) $sec, $usec);
