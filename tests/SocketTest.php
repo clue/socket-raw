@@ -107,8 +107,13 @@ class SocketTest extends TestCase
 
     public function testConnectAsyncFailUnbound()
     {
-        if (PHP_OS !== 'Linux') {
-            $this->markTestSkipped('Only Linux is known to refuse connections to unbound addresses');
+        $client = @stream_socket_client('localhost:2', $errno, $errstr, 5.0);
+        if ($client !== false || $errno !== SOCKET_ECONNREFUSED) {
+            $this->markTestSkipped('Expected unbound address to return ECONNREFUSED, but got errno ' . $errno);
+        }
+
+        if (DIRECTORY_SEPARATOR === '\\') {
+            $this->markTestIncomplete('Windows uses EWOULDBLOCK and exceptfds, see connectTimeout() instead');
         }
 
         $socket = $this->factory->createTcp4();
@@ -187,15 +192,16 @@ class SocketTest extends TestCase
 
     public function testConnectTimeoutFailUnbound()
     {
-        if (PHP_OS !== 'Linux') {
-            $this->markTestSkipped('Only Linux is known to refuse connections to unbound addresses');
+        $client = @stream_socket_client('localhost:2', $errno, $errstr, 5.0);
+        if ($client !== false || $errno !== SOCKET_ECONNREFUSED) {
+            $this->markTestSkipped('Expected unbound address to return ECONNREFUSED, but got errno ' . $errno);
         }
 
         $socket = $this->factory->createTcp4();
 
         $this->setExpectedException('Socket\Raw\Exception', null, SOCKET_ECONNREFUSED);
 
-        $socket->connectTimeout('localhost:2', 0.5);
+        $socket->connectTimeout('localhost:2', 5.0);
     }
 
     /** @group internet */
