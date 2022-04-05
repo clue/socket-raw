@@ -254,8 +254,44 @@ class SocketTest extends TestCase
         // disconnect local client
         $client->close();
 
-        // disconnection should be detected withing 1s max
+        // disconnection should be detected within 1s max
         $this->assertTrue($peer->selectRead(1.0));
+
+        $peer->close();
+    }
+
+    /**
+     * @depends testServerNonBlockingAcceptClient
+     */
+    public function testServerAcceptsClientWithoutTimeout()
+    {
+        $server = $this->factory->createListen(0);
+
+        // create local client connected to the given server
+        $client = $this->factory->createClient($server->getSockName());
+
+        // client connected, so we should be able to accept() this socket immediately
+        $now = microtime(true);
+        $server->selectRead(null);
+        $peer = $server->accept();
+        $this->assertLessThan(1.0, microtime(true) - $now);
+
+        // peer should be writable right away
+        $now = microtime(true);
+        $this->assertTrue($peer->selectWrite(null));
+        $peer->write('test');
+        $this->assertLessThan(1.0, microtime(true) - $now);
+
+        // expect to receive the message in one chunk
+        $this->assertEquals('test', $client->read(100));
+
+        // disconnect local client
+        $client->close();
+
+        // disconnection should be detected within 1s max
+        $now = microtime(true);
+        $this->assertTrue($peer->selectRead(null));
+        $this->assertLessThan(1.0, microtime(true) - $now);
 
         $peer->close();
     }
