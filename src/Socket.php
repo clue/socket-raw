@@ -152,8 +152,16 @@ class Socket
                 throw $e;
             }
 
-            // connection should be completed (or rejected) within timeout
-            if ($this->selectWrite($timeout) === false) {
+            // connection should be completed (or rejected) within timeout: socket becomes writable on success or error
+            // Windows requires special care because it uses exceptfds for socket errors: https://github.com/reactphp/event-loop/issues/206
+            $r = null;
+            $w = array($this->resource);
+            $e = DIRECTORY_SEPARATOR === '\\' ? $w : null;
+            $ret = @socket_select($r, $w, $e, $timeout === null ? null : (int) $timeout, (int) (($timeout - floor($timeout)) * 1000000));
+
+            if ($ret === false) {
+                throw Exception::createFromGlobalSocketOperation('Failed to select socket for writing');
+            } elseif ($ret === 0) {
                 throw new Exception('Timed out while waiting for connection', SOCKET_ETIMEDOUT);
             }
 
