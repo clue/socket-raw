@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.6.0 (2022-04-14)
+
+*   Feature: Forward compatibility with PHP 8.1 release.
+    (#67 and #68 by @clue)
+
+*   Fix: Fix reporting refused connections on Windows.
+    (#69 by @clue)
+
+*   Improve CI setup and documentation.
+    (#70 and #65 by @clue, #64 by @szepeviktor and #66 by @PaulRotmann)
+
 ## 1.5.0 (2020-11-27)
 
 *   Feature: Support PHP 8 and drop legacy HHVM support.
