@@ -209,7 +209,7 @@ This project follows [SemVer](https://semver.org/).
 This will install the latest supported version:
 
 ```bash
-$ composer require clue/socket-raw:^1.6
+composer require clue/socket-raw:^1.6
 ```
 
 See also the [CHANGELOG](CHANGELOG.md) for details about version upgrades.
@@ -225,13 +225,13 @@ To run the test suite, you first need to clone this repo and then install all
 dependencies [through Composer](https://getcomposer.org/):
 
 ```bash
-$ composer install
+composer install
 ```
 
 To run the test suite, go to the project root and run:
 
 ```bash
-$ vendor/bin/phpunit
+vendor/bin/phpunit
 ```
 
 Note that the test suite contains tests for ICMP sockets which require root
@@ -239,7 +239,7 @@ access on Unix/Linux systems. Therefor some tests will be skipped unless you run
 the following command to execute the full test suite:
 
 ```bash
-$ sudo vendor/bin/phpunit
+sudo vendor/bin/phpunit
 ```
 
 The test suite also contains a number of functional integration tests that rely
@@ -247,7 +247,7 @@ on a stable internet connection.
 If you do not want to run these, they can simply be skipped like this:
 
 ```bash
-$ vendor/bin/phpunit --exclude-group internet
+vendor/bin/phpunit --exclude-group internet
 ```
 
 ## License

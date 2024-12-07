@@ -11,9 +11,12 @@ jobs:
     strategy:
       matrix:
         os:
-          - ubuntu-20.04
-          - windows-2019
+          - ubuntu-24.04
+          - windows-2022
         php:
+          - 8.4
+          - 8.3
+          - 8.2
           - 8.1
           - 8.0
           - 7.4
@@ -26,12 +29,14 @@ jobs:
           - 5.4
           - 5.3
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: sockets
           coverage: xdebug
+      - run: composer config secure-http false && composer config repo.packagist composer http://packagist.org && composer config preferred-install source
+        if: ${{ matrix.php < 5.5 && matrix.os == 'windows-2022' }} # legacy PHP on Windows is allowed to use insecure downloads until it will be removed again
       - run: composer install
       - run: vendor/bin/phpunit --coverage-text
         if: ${{ matrix.php >= 7.3 }}
